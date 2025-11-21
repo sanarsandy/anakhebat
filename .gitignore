@@ -255,11 +255,10 @@ __pycache__/
 *.a
 
 # ============================================
-# Documentation (Optional - uncomment if needed)
+# Documentation
 # ============================================
-# Uncomment if you don't want to commit generated docs
-# docs/_build/
-# site/
+# Ignore all documentation files
+docs/
 
 # ============================================
 # Project Specific

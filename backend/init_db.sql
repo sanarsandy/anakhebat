@@ -1,6 +1,6 @@
 -- ============================================
 -- TUKEM DATABASE INITIALIZATION SCRIPT
--- Run this file once to setup all tables
+-- This file runs automatically when PostgreSQL container starts for the first time
 -- ============================================
 
 -- Create Extension
@@ -215,6 +215,5 @@ CREATE INDEX IF NOT EXISTS idx_child_immunizations_date ON child_immunizations(g
 CREATE INDEX IF NOT EXISTS idx_child_immunizations_schedule ON child_immunizations(immunization_schedule_id);
 
 -- ============================================
--- DONE!
+-- DONE! Tables created automatically on first start
 -- ============================================
-

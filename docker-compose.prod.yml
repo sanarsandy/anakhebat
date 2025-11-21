@@ -12,13 +12,8 @@ services:
       - ./backups:/backups
     networks:
       - tukem-network
-    # Remove healthcheck - let it start naturally
-    # healthcheck:
-    #   test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-tukem_user} -d ${DB_NAME:-tukem_db} || exit 1"]
-    #   interval: 5s
-    #   timeout: 3s
-    #   retries: 10
-    #   start_period: 10s
+    ports:
+      - "127.0.0.1:5432:5432"
 
   api:
     build:
@@ -27,24 +22,23 @@ services:
     container_name: tukem-api-prod
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8085:8080"  # Bind ke localhost saja, akan di-proxy oleh Nginx
+      - "127.0.0.1:8085:8080"
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_PORT: ${DB_PORT}
-      PORT: ${PORT}
-      JWT_SECRET: ${JWT_SECRET}
-      ENV: ${ENV}
+      DB_HOST: ${DB_HOST:-db}
+      DB_USER: ${DB_USER:-tukem_user}
+      DB_PASSWORD: ${DB_PASSWORD:-tukem_password}
+      DB_NAME: ${DB_NAME:-tukem_db}
+      DB_PORT: ${DB_PORT:-5432}
+      PORT: ${PORT:-8080}
+      JWT_SECRET: ${JWT_SECRET:-secret}
+      ENV: ${ENV:-production}
     depends_on:
-      db:
-        condition: service_started
+      - db
     networks:
       - tukem-network
     volumes:
       - ./backend:/app
-    command: sh -c "sleep 10 && go run main.go"
+    command: sh -c "sleep 15 && go run main.go"
 
   app:
     build:
@@ -53,9 +47,9 @@ services:
     container_name: tukem-app-prod
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:3000"  # Bind ke localhost saja, akan di-proxy oleh Nginx
+      - "127.0.0.1:3000:3000"
     environment:
-      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-http://localhost:8080/api}
     depends_on:
       - api
     networks:
@@ -71,4 +65,3 @@ networks:
 volumes:
   postgres_data:
     driver: local
-

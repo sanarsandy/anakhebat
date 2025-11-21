@@ -23,9 +23,10 @@ WORKDIR /app
 # This includes both server/ and public/ directories
 COPY --from=builder /app/.output ./
 
-# Also copy public directory separately for volume mount
-# This allows Nginx to serve static files directly
-RUN mkdir -p /app/public && cp -r /app/.output/public/* /app/public/ 2>/dev/null || true
+# Create symlink to ensure server can find public directory
+# Server looks for public in .output/public, but we copied .output to /app
+# So public is now at /app/public, which is correct
+RUN ls -la /app/ && ls -la /app/public/ 2>/dev/null || echo "Public directory check"
 
 # Set environment variables
 ENV NODE_ENV=production

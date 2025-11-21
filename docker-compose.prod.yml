@@ -56,9 +56,6 @@ services:
       - api
     networks:
       - tukem-network
-    # Mount public directory for Nginx to serve static files directly
-    volumes:
-      - ./frontend-public:/app/public:ro
 
 networks:
   tukem-network:

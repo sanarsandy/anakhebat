@@ -49,14 +49,12 @@ services:
     ports:
       - "127.0.0.1:3000:3000"
     environment:
-      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-http://localhost:8080/api}
+      NODE_ENV: production
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-http://localhost:8080}
     depends_on:
       - api
     networks:
       - tukem-network
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
 
 networks:
   tukem-network:

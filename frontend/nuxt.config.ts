@@ -16,6 +16,9 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080'
     }
   },
+  nitro: {
+    preset: 'node-server'
+  },
   vite: {
     server: {
       host: '0.0.0.0', // Allow external connections

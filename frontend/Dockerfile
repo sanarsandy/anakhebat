@@ -20,7 +20,11 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy .output directory from builder to /app
+# This includes both server/ and public/ directories
 COPY --from=builder /app/.output ./
+
+# Verify structure (optional, for debugging)
+RUN ls -la /app/ && ls -la /app/server/ && ls -la /app/public/ 2>/dev/null || echo "Some directories may not exist yet"
 
 # Set environment variables
 ENV NODE_ENV=production

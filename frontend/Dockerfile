@@ -23,6 +23,10 @@ WORKDIR /app
 # This includes both server/ and public/ directories
 COPY --from=builder /app/.output ./
 
+# Also copy public directory separately for volume mount
+# This allows Nginx to serve static files directly
+RUN mkdir -p /app/public && cp -r /app/.output/public/* /app/public/ 2>/dev/null || true
+
 # Set environment variables
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
@@ -33,6 +37,5 @@ EXPOSE 3000
 
 # Run production server
 # Path is /app/server/index.mjs because .output was copied to /app
-# Set working directory to ensure correct path resolution
 WORKDIR /app
 CMD ["node", "server/index.mjs"]

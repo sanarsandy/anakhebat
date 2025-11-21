@@ -20,35 +20,20 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files to install production dependencies
-# Nitro server needs runtime dependencies to serve static files correctly
-COPY --from=builder /app/package*.json ./
-
-# Install production dependencies
-# Some dependencies are needed at runtime for Nitro to work properly
-RUN npm ci --omit=dev
-
 # Copy the entire .output directory from builder
-# According to Nuxt docs, we copy .output to root and run from there
+# According to Nuxt docs, .output is standalone and contains everything needed
 # Structure: /app/server/index.mjs and /app/public/_nuxt/...
 COPY --from=builder /app/.output ./
-
-# Copy public directory to where Nitro expects it
-# Nitro looks for public files in server/chunks/public/ relative to server/index.mjs
-# So we copy /app/public to /app/server/chunks/public
-RUN mkdir -p /app/server/chunks && cp -r /app/public /app/server/chunks/public
 
 # Set environment variables
 # Nitro respects NITRO_PORT/PORT and NITRO_HOST/HOST
 ENV NODE_ENV=production
 ENV NITRO_HOST=0.0.0.0
 ENV NITRO_PORT=3000
-ENV NITRO_PRESET=node-server
 
 EXPOSE 3000
 
-# Run the Nitro server from the directory containing .output
-# Working directory is /app, and .output contents were copied to /app
-# So structure is: /app/server/index.mjs and /app/public/_nuxt/...
-WORKDIR /app
+# Run the Nitro server
+# According to official docs: node .output/server/index.mjs
+# Since we copied .output to /app, the path is server/index.mjs
 CMD ["node", "server/index.mjs"]

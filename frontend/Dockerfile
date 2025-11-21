@@ -19,8 +19,8 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy only .output directory from builder
-COPY --from=builder /app/.output ./.output
+# Copy .output directory from builder to /app
+COPY --from=builder /app/.output ./
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -30,5 +30,5 @@ ENV PORT=3000
 EXPOSE 3000
 
 # Run production server
-# Note: Nuxt expects to run from the directory containing .output
-CMD ["node", ".output/server/index.mjs"]
+# Path is /app/server/index.mjs because .output was copied to /app
+CMD ["node", "server/index.mjs"]

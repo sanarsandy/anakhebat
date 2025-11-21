@@ -51,10 +51,14 @@ services:
     environment:
       NODE_ENV: production
       NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-http://localhost:8080}
+      NITRO_PRESET: node-server
     depends_on:
       - api
     networks:
       - tukem-network
+    # Mount public directory for Nginx to serve static files directly (optional)
+    # volumes:
+    #   - ./frontend/.output/public:/app/public:ro
 
 networks:
   tukem-network:

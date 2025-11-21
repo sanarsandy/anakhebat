@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: tukem-db
+    environment:
+      POSTGRES_USER: tukem_user
+      POSTGRES_PASSWORD: tukem_password
+      POSTGRES_DB: tukem_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tukem-network
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tukem-api
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_USER: tukem_user
+      DB_PASSWORD: tukem_password
+      DB_NAME: tukem_db
+      DB_PORT: 5432
+    depends_on:
+      - db
+    networks:
+      - tukem-network
+    command: go run main.go
+    volumes:
+      - ./backend:/app
+
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tukem-app
+    ports:
+      - "3000:3000"
+    environment:
+      # Use localhost for client-side (browser) API calls
+      NUXT_PUBLIC_API_BASE: http://localhost:8080
+    depends_on:
+      - api
+    networks:
+      - tukem-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+networks:
+  tukem-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

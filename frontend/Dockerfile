@@ -15,7 +15,7 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install all dependencies (needed for nuxt)
+# Install only production dependencies
 RUN npm ci --omit=dev
 
 # Copy entire .output directory (includes both server and public)
@@ -27,5 +27,6 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
-# Use nuxt preview which properly serves static assets
-CMD ["npx", "nuxt", "preview"]
+# Run production server directly (not preview mode)
+WORKDIR /app/.output
+CMD ["node", "server/index.mjs"]

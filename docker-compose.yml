@@ -40,12 +40,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: development  # Use development stage for dev environment
     container_name: tukem-app
     ports:
       - "3000:3000"
     environment:
       # Use localhost for client-side (browser) API calls
       NUXT_PUBLIC_API_BASE: http://localhost:8080
+      NODE_ENV: development
     depends_on:
       - api
     networks:
@@ -53,6 +55,7 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    command: npm run dev  # Run dev server for development
 
 networks:
   tukem-network:

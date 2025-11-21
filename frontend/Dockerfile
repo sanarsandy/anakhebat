@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:18-alpine AS base
 
 WORKDIR /app
 
@@ -10,6 +10,12 @@ RUN npm ci
 
 # Copy source code
 COPY . .
+
+# Development stage - just install deps, no build
+FROM base AS development
+
+# Production builder stage - build the application
+FROM base AS builder
 
 # Build application
 # This creates .output directory with server/ and public/ subdirectories

@@ -17,25 +17,8 @@ func main() {
 	// Initialize Database
 	db.Init()
 
-	// Apply Migrations in order
-	migrations := []string{
-		"001_init_schema.sql",
-		"002_children_table.sql",
-		"003_measurements_table.sql",
-		"004_milestones_tables.sql",
-		"005_who_standards.sql",
-		"006_add_denver_domain.sql",
-		"007_stimulation_content.sql",
-		"008_immunization_tables.sql",
-	}
-
-	for _, migration := range migrations {
-		if err := utils.ApplyMigration(db.DB, migration); err != nil {
-			// Log error but don't fail if it's just "table already exists"
-			// For this simple implementation, we assume the SQL has IF NOT EXISTS
-			log.Printf("Warning: Migration %s might have failed (or already exists): %v", migration, err)
-		}
-	}
+	// Skip migrations - use init_db.sql script instead
+	// Run: ./setup-database.sh or manually run backend/init_db.sql
 
 	// Seed Data
 	if err := utils.SeedMilestones(db.DB); err != nil {

@@ -309,11 +309,16 @@ Cari dan update (atau tambahkan jika belum ada):
 ```env
 # Frontend Configuration
 FRONTEND_URL=https://anakhebat.web.id
-NUXT_PUBLIC_API_BASE=https://anakhebat.web.id/api
+NUXT_PUBLIC_API_BASE=https://anakhebat.web.id
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS=https://anakhebat.web.id,http://anakhebat.web.id
 ```
+
+**PENTING**: `NUXT_PUBLIC_API_BASE` **TIDAK** boleh include `/api` karena:
+- Nginx sudah proxy `/api` ke backend
+- Frontend code sudah menambahkan `/api` di path
+- Jika include `/api` akan jadi `/api/api/` (duplikasi)
 
 ### 7.3 Save File
 - Tekan `Ctrl + O` untuk save

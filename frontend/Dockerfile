@@ -19,19 +19,20 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy .output directory from builder
-# Keep the .output structure as server expects it
-COPY --from=builder /app/.output ./.output
+# Copy entire .output directory from builder
+# According to Nuxt docs, copy .output to root and run from there
+COPY --from=builder /app/.output ./
 
 # Set environment variables
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
-ENV NITRO_PRESET=node-server
 
 EXPOSE 3000
 
-# Run production server from .output directory
-# Server expects to run from directory containing .output
-WORKDIR /app
-CMD ["node", ".output/server/index.mjs"]
+# Run production server
+# Nuxt docs: run "node server/index.mjs" from directory containing .output
+# Since we copied .output to /app, the structure is:
+# /app/server/index.mjs
+# /app/public/_nuxt/...
+CMD ["node", "server/index.mjs"]

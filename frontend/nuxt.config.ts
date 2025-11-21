@@ -17,10 +17,7 @@ export default defineNuxtConfig({
     }
   },
   nitro: {
-    preset: 'node-server',
-    output: {
-      publicDir: 'public'
-    }
+    preset: 'node-server'
   },
   vite: {
     server: {

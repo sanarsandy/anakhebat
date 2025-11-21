@@ -33,6 +33,11 @@ RUN npm ci --omit=dev
 # Structure: /app/server/index.mjs and /app/public/_nuxt/...
 COPY --from=builder /app/.output ./
 
+# Create symlink for Nitro to find public directory
+# Nitro looks for public files in server/chunks/public/ relative to server/index.mjs
+# But files are actually in /app/public/, so we create a symlink
+RUN mkdir -p /app/server/chunks && ln -s /app/public /app/server/chunks/public
+
 # Set environment variables
 # Nitro respects NITRO_PORT/PORT and NITRO_HOST/HOST
 ENV NODE_ENV=production
@@ -45,7 +50,5 @@ EXPOSE 3000
 # Run the Nitro server from the directory containing .output
 # Working directory is /app, and .output contents were copied to /app
 # So structure is: /app/server/index.mjs and /app/public/_nuxt/...
-# Change to /app directory and run server/index.mjs
-# This ensures Nitro can resolve paths correctly relative to working directory
 WORKDIR /app
 CMD ["node", "server/index.mjs"]

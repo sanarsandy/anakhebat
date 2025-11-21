@@ -19,14 +19,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy .output directory from builder to /app
-# This includes both server/ and public/ directories
-COPY --from=builder /app/.output ./
-
-# Create symlink to ensure server can find public directory
-# Server looks for public in .output/public, but we copied .output to /app
-# So public is now at /app/public, which is correct
-RUN ls -la /app/ && ls -la /app/public/ 2>/dev/null || echo "Public directory check"
+# Copy .output directory from builder
+# Keep the .output structure as server expects it
+COPY --from=builder /app/.output ./.output
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -36,7 +31,7 @@ ENV NITRO_PRESET=node-server
 
 EXPOSE 3000
 
-# Run production server
-# Path is /app/server/index.mjs because .output was copied to /app
+# Run production server from .output directory
+# Server expects to run from directory containing .output
 WORKDIR /app
-CMD ["node", "server/index.mjs"]
+CMD ["node", ".output/server/index.mjs"]

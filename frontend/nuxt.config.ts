@@ -15,5 +15,19 @@ export default defineNuxtConfig({
       // Use localhost for client-side (browser) requests
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080'
     }
+  },
+  vite: {
+    server: {
+      host: '0.0.0.0', // Allow external connections
+      allowedHosts: process.env.VITE_ALLOWED_HOSTS 
+        ? process.env.VITE_ALLOWED_HOSTS.split(',')
+        : [
+            'localhost',
+            '127.0.0.1',
+            'anakhebat.web.id',
+            'www.anakhebat.web.id',
+            '103.127.134.107'
+          ]
+    }
   }
 })

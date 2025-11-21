@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"tukem-backend/db"
 	"tukem-backend/handlers"
 	customMiddleware "tukem-backend/middleware"
@@ -57,8 +58,14 @@ func EchoServer() *echo.Echo {
 	e.Use(middleware.Recover())
 	
 	// CORS Configuration
+	corsOrigins := []string{"http://localhost:3000"}
+	if corsEnv := os.Getenv("CORS_ALLOWED_ORIGINS"); corsEnv != "" {
+		// Support multiple origins separated by comma
+		corsOrigins = append(corsOrigins, strings.Split(corsEnv, ",")...)
+	}
+	
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:3000"},
+		AllowOrigins: corsOrigins,
 		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodOptions},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 		ExposeHeaders: []string{"Content-Disposition"}, // Expose Content-Disposition for file downloads

@@ -40,6 +40,8 @@ ENV NITRO_HOST=0.0.0.0
 ENV NITRO_PORT=3000
 # Ensure Nitro can find the public directory
 ENV NITRO_PRESET=node-server
+# Set public directory path explicitly (relative to working directory)
+ENV NITRO_PUBLIC_DIR=./public
 
 EXPOSE 3000
 

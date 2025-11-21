@@ -17,7 +17,16 @@ export default defineNuxtConfig({
     }
   },
   nitro: {
-    preset: 'node-server'
+    preset: 'node-server',
+    // Explicitly configure public assets directory
+    // This ensures Nitro can find static files correctly
+    publicAssets: [
+      {
+        baseURL: '/',
+        dir: 'public',
+        maxAge: 60 * 60 * 24 * 365 // 1 year
+      }
+    ]
   },
   vite: {
     server: {

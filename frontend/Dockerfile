@@ -38,15 +38,14 @@ COPY --from=builder /app/.output ./
 ENV NODE_ENV=production
 ENV NITRO_HOST=0.0.0.0
 ENV NITRO_PORT=3000
-# Ensure Nitro can find the public directory
 ENV NITRO_PRESET=node-server
-# Set public directory path explicitly (relative to working directory)
-ENV NITRO_PUBLIC_DIR=./public
 
 EXPOSE 3000
 
-# Run the Nitro server
-# Working directory is /app, and .output was copied to /app
+# Run the Nitro server from the directory containing .output
+# Working directory is /app, and .output contents were copied to /app
 # So structure is: /app/server/index.mjs and /app/public/_nuxt/...
-# This matches the official Nuxt documentation
+# Change to /app directory and run server/index.mjs
+# This ensures Nitro can resolve paths correctly relative to working directory
+WORKDIR /app
 CMD ["node", "server/index.mjs"]

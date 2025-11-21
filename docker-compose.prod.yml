@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: tukem-db-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    networks:
+      - tukem-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tukem-api-prod
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8085:8080"  # Bind ke localhost saja, akan di-proxy oleh Nginx
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      PORT: ${PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      ENV: ${ENV}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - tukem-network
+    volumes:
+      - ./backend:/app
+    command: go run main.go
+
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tukem-app-prod
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"  # Bind ke localhost saja, akan di-proxy oleh Nginx
+    environment:
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
+    depends_on:
+      - api
+    networks:
+      - tukem-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+networks:
+  tukem-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+

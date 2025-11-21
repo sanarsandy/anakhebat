@@ -10,6 +10,11 @@
 .env.test
 *.env
 
+# Production files (keep in repo but document)
+# docker-compose.prod.yml
+# backup.sh
+# nginx-tukem.conf
+
 # ============================================
 # Go Backend
 # ============================================

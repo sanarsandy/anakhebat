@@ -33,10 +33,10 @@ RUN npm ci --omit=dev
 # Structure: /app/server/index.mjs and /app/public/_nuxt/...
 COPY --from=builder /app/.output ./
 
-# Create symlink for Nitro to find public directory
+# Copy public directory to where Nitro expects it
 # Nitro looks for public files in server/chunks/public/ relative to server/index.mjs
-# But files are actually in /app/public/, so we create a symlink
-RUN mkdir -p /app/server/chunks && ln -s /app/public /app/server/chunks/public
+# So we copy /app/public to /app/server/chunks/public
+RUN mkdir -p /app/server/chunks && cp -r /app/public /app/server/chunks/public
 
 # Set environment variables
 # Nitro respects NITRO_PORT/PORT and NITRO_HOST/HOST

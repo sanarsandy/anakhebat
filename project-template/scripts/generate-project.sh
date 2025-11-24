@@ -39,25 +39,15 @@ cp -r "$TEMPLATE_DIR" "$PROJECT_DIR"
 # Replace placeholders
 echo "🔧 Replacing placeholders..."
 
-# Backend
-if [ -f "$PROJECT_DIR/backend/go.mod" ]; then
-    sed -i.bak "s/tukem-backend/${PROJECT_NAME}-backend/g" "$PROJECT_DIR/backend/go.mod"
-    rm "$PROJECT_DIR/backend/go.mod.bak"
-fi
+# Replace {{PROJECT_NAME}} placeholder in all files
+find "$PROJECT_DIR" -type f \( -name "*.yml" -o -name "*.yaml" -o -name "*.go" -o -name "*.ts" -o -name "*.vue" -o -name "*.json" -o -name "*.md" -o -name "*.sql" \) -exec sed -i.bak "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" {} \;
 
-# Frontend
-if [ -f "$PROJECT_DIR/frontend/package.json" ]; then
-    sed -i.bak "s/tukem-frontend/${PROJECT_NAME}-frontend/g" "$PROJECT_DIR/frontend/package.json"
-    rm "$PROJECT_DIR/frontend/package.json.bak"
-fi
+# Remove backup files
+find "$PROJECT_DIR" -type f -name "*.bak" -delete
 
-# Docker Compose
-for file in "$PROJECT_DIR"/docker-compose*.yml; do
-    if [ -f "$file" ]; then
-        sed -i.bak "s/tukem/${PROJECT_NAME}/g" "$file"
-        rm "${file}.bak"
-    fi
-done
+# Also replace tukem references (legacy)
+find "$PROJECT_DIR" -type f \( -name "*.go" -o -name "*.json" \) -exec sed -i.bak "s/tukem-backend/${PROJECT_NAME}-backend/g; s/tukem-frontend/${PROJECT_NAME}-frontend/g" {} \;
+find "$PROJECT_DIR" -type f -name "*.bak" -delete
 
 echo "✅ Project generated successfully!"
 echo ""

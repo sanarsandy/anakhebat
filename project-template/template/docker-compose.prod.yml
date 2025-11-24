@@ -1,0 +1,71 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: {{PROJECT_NAME}}-db-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-tukem_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-tukem_password}
+      POSTGRES_DB: ${DB_NAME:-tukem_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    networks:
+      - {{PROJECT_NAME}}-network
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: {{PROJECT_NAME}}-api-prod
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8085:8080"
+    environment:
+      DB_HOST: ${DB_HOST:-db}
+      DB_USER: ${DB_USER:-tukem_user}
+      DB_PASSWORD: ${DB_PASSWORD:-tukem_password}
+      DB_NAME: ${DB_NAME:-tukem_db}
+      DB_PORT: ${DB_PORT:-5432}
+      PORT: ${PORT:-8080}
+      JWT_SECRET: ${JWT_SECRET:-secret}
+      ENV: ${ENV:-production}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URL: ${GOOGLE_REDIRECT_URL}
+      FRONTEND_URL: ${FRONTEND_URL}
+    depends_on:
+      - db
+    networks:
+      - {{PROJECT_NAME}}-network
+    volumes:
+      - ./backend:/app
+    command: sh -c "sleep 15 && go run main.go"
+
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: {{PROJECT_NAME}}-app-prod
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-http://localhost:8080}
+      NITRO_PRESET: node-server
+    depends_on:
+      - api
+    networks:
+      - {{PROJECT_NAME}}-network
+
+networks:
+  {{PROJECT_NAME}}-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+

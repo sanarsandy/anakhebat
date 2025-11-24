@@ -32,6 +32,11 @@ services:
       PORT: ${PORT:-8080}
       JWT_SECRET: ${JWT_SECRET:-secret}
       ENV: ${ENV:-production}
+      # Google OAuth
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_REDIRECT_URL: ${GOOGLE_REDIRECT_URL:-}
+      FRONTEND_URL: ${FRONTEND_URL:-}
     depends_on:
       - db
     networks:

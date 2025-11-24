@@ -88,6 +88,8 @@ func EchoServer() *echo.Echo {
 	auth := e.Group("/api/auth")
 	auth.POST("/register", handlers.Register)
 	auth.POST("/login", handlers.Login)
+	auth.GET("/google", handlers.GetGoogleAuthURL)
+	auth.GET("/google/callback", handlers.GoogleAuthCallback)
 
 	// Protected Routes
 	api := e.Group("/api")

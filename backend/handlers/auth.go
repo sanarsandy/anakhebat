@@ -25,11 +25,12 @@ func Register(c echo.Context) error {
 	}
 
 	// Insert into DB
-	query := `INSERT INTO users (email, password_hash, full_name, role) VALUES ($1, $2, $3, 'parent') RETURNING id, created_at`
+	query := `INSERT INTO users (email, password_hash, full_name, role, auth_provider) VALUES ($1, $2, $3, 'parent', 'email') RETURNING id, created_at`
 	var user models.User
 	user.Email = req.Email
 	user.FullName = req.FullName
 	user.Role = "parent"
+	user.AuthProvider = "email"
 
 	err = db.DB.QueryRow(query, req.Email, string(hashedPassword), req.FullName).Scan(&user.ID, &user.CreatedAt)
 	if err != nil {
@@ -45,14 +46,34 @@ func Login(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request"})
 	}
 
-	// Find user
+	// Find user - only look for email/password users (auth_provider = 'email' or 'both')
+	// Google-only users should not be found here
 	var user models.User
-	query := `SELECT id, email, password_hash, full_name, role FROM users WHERE email = $1`
-	err := db.DB.QueryRow(query, req.Email).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.FullName, &user.Role)
+	var googleID sql.NullString
+	var authProvider sql.NullString
+	query := `SELECT id, email, password_hash, full_name, role, google_id, auth_provider 
+	          FROM users 
+	          WHERE email = $1 AND (auth_provider = 'email' OR auth_provider = 'both')`
+	err := db.DB.QueryRow(query, req.Email).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.FullName, &user.Role, &googleID, &authProvider)
 	if err == sql.ErrNoRows {
-		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid credentials"})
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "User belum terdaftar"})
 	} else if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Database error"})
+	}
+
+	// Set optional fields
+	if googleID.Valid {
+		user.GoogleID = &googleID.String
+	}
+	if authProvider.Valid {
+		user.AuthProvider = authProvider.String
+	} else {
+		user.AuthProvider = "email"
+	}
+
+	// Check if user has password (for 'email' or 'both' auth_provider)
+	if user.PasswordHash == "" || user.PasswordHash == "NULL" {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid credentials"})
 	}
 
 	// Check password

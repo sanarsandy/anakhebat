@@ -28,6 +28,12 @@ services:
       DB_PASSWORD: tukem_password
       DB_NAME: tukem_db
       DB_PORT: 5432
+      # Google OAuth
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-686123668783-ths9gsp02mamghrvijdpkt5tvrjeuq6g.apps.googleusercontent.com}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-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}
+      GOOGLE_REDIRECT_URL: ${GOOGLE_REDIRECT_URL:-http://localhost:8080/api/auth/google/callback}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      JWT_SECRET: ${JWT_SECRET:-secret}
     depends_on:
       - db
     networks:

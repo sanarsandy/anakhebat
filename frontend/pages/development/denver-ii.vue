@@ -48,26 +48,64 @@
 
       <!-- Legend -->
       <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
-        <div class="flex flex-wrap items-center gap-6 text-sm">
-          <div class="flex items-center gap-2">
-            <div class="w-4 h-4 bg-green-500 border border-gray-400"></div>
-            <span>Pass (Lulus)</span>
+        <div class="space-y-3">
+          <div class="text-sm font-semibold text-gray-700 mb-2">Keterangan Grafik Denver II:</div>
+          
+          <!-- Percentile Zones -->
+          <div class="flex flex-wrap items-center gap-4 text-xs">
+            <div class="flex items-center gap-2">
+              <div class="w-12 h-4 rounded" style="background: linear-gradient(to right, #ffffff, #e5e7eb, #9ca3af, #4b5563); border: 1px solid #9ca3af;"></div>
+              <span>Bar Persentil: 25% → 50% → 75% → 90%</span>
+            </div>
           </div>
-          <div class="flex items-center gap-2">
-            <div class="w-4 h-4 bg-red-500 border border-gray-400"></div>
-            <span>Fail (Tidak Lulus)</span>
+          
+          <!-- Status Markers -->
+          <div class="flex flex-wrap items-center gap-4 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="text-green-600 font-bold text-lg">✓</span>
+              <span>Pass (Lulus)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-red-600 font-bold text-lg">✗</span>
+              <span>Fail (Tidak Lulus)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-yellow-600 font-bold text-lg">R</span>
+              <span>Refuse (Menolak)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-gray-500 font-bold text-lg">—</span>
+              <span>Belum Dinilai</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-red-600"></div>
+              <span class="text-red-600 font-semibold">Red Flag</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-0.5 h-4 bg-blue-600"></div>
+              <div class="w-3 h-3 rounded-full bg-blue-600 border-2 border-white"></div>
+              <span>Usia Saat Ini</span>
+            </div>
           </div>
-          <div class="flex items-center gap-2">
-            <div class="w-4 h-4 bg-yellow-500 border border-gray-400"></div>
-            <span>Sometimes (Kadang-kadang)</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-4 h-4 bg-gray-200 border border-gray-400"></div>
-            <span>Belum Dinilai</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full bg-red-600"></div>
-            <span class="text-red-600 font-semibold">Red Flag</span>
+          
+          <!-- Domain Colors -->
+          <div class="flex flex-wrap items-center gap-4 text-xs pt-2 border-t border-blue-300">
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded bg-blue-500"></div>
+              <span><strong>PS</strong> - Personal Sosial</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded bg-red-500"></div>
+              <span><strong>FM</strong> - Adaptif Motorik Halus</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded bg-green-500"></div>
+              <span><strong>L</strong> - Bahasa</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded bg-yellow-500"></div>
+              <span><strong>GM</strong> - Motorik Kasar</span>
+            </div>
           </div>
         </div>
       </div>
@@ -81,17 +119,29 @@
               <div class="w-64 flex-shrink-0 border-r border-gray-200 p-2 text-xs font-semibold text-gray-700">
                 Domain / Milestone
               </div>
-              <div class="flex-1 relative">
-                <div class="absolute inset-0 flex">
+              <div class="flex-1 relative h-12">
+                <div class="absolute inset-0">
                   <div 
-                    v-for="age in ageMarkers" 
+                    v-for="(age, idx) in ageMarkers" 
                     :key="age"
-                    class="flex-1 border-r border-gray-300 text-center text-xs text-gray-600"
-                    :style="{ width: `${getAgePosition(age)}%` }"
+                    class="absolute text-center text-xs"
+                    :style="{ 
+                      left: `${getAgePosition(age)}%`,
+                      transform: 'translateX(-50%)',
+                      width: '60px'
+                    }"
                   >
-                    <div class="font-semibold">{{ age }}</div>
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-3 bg-gray-300"></div>
+                    <div class="font-semibold pt-4 text-gray-600">{{ age }}</div>
                     <div class="text-xs text-gray-500">{{ age < 24 ? 'bln' : 'thn' }}</div>
                   </div>
+                  <!-- Vertical lines between markers -->
+                  <div 
+                    v-for="(age, idx) in ageMarkers.slice(0, -1)" 
+                    :key="`line-${age}`"
+                    class="absolute top-0 bottom-0 w-px bg-gray-300"
+                    :style="{ left: `${getAgePosition(age)}%` }"
+                  ></div>
                 </div>
               </div>
             </div>
@@ -104,9 +154,9 @@
               class="border-b border-gray-200"
             >
               <!-- Domain Header -->
-              <div class="bg-gray-100 border-b border-gray-300">
+              <div class="border-b border-gray-300" :style="{ backgroundColor: getDomainColor(domainKey, 0.1) }">
                 <div class="flex" :style="{ minWidth: `${chartWidth}px` }">
-                  <div class="w-64 flex-shrink-0 border-r border-gray-300 p-3 font-bold text-gray-900">
+                  <div class="w-64 flex-shrink-0 border-r border-gray-300 p-3 font-bold" :style="{ color: getDomainColor(domainKey, 1) }">
                     {{ getDomainName(domainKey) }}
                   </div>
                   <div class="flex-1"></div>
@@ -131,17 +181,40 @@
                   <!-- Age Bar -->
                   <div class="flex-1 relative h-12">
                     <div class="absolute inset-0 flex items-center">
-                      <!-- Age Range Bar -->
+                      <!-- Percentile Bar with 4 zones (25%, 50%, 75%, 90%) -->
                       <div 
-                        v-if="milestone.min_age_range !== null && milestone.max_age_range !== null"
-                        class="h-6 rounded"
-                        :class="getBarColor(milestone.assessment_status)"
+                        v-if="milestone.age_25_percentile !== undefined && milestone.age_90_percentile !== undefined"
+                        class="absolute h-6 rounded border border-gray-400"
                         :style="{
-                          left: `${getAgePosition(milestone.min_age_range)}%`,
-                          width: `${getAgePosition(milestone.max_age_range) - getAgePosition(milestone.min_age_range)}%`,
-                          border: '1px solid #9CA3AF'
+                          left: `${getAgePosition(milestone.age_25_percentile)}%`,
+                          width: `${getAgePosition(milestone.age_90_percentile) - getAgePosition(milestone.age_25_percentile)}%`,
+                          background: getPercentileGradient(milestone, domainKey)
                         }"
-                      ></div>
+                      >
+                        <!-- Zone dividers -->
+                        <div 
+                          class="absolute top-0 bottom-0 w-px bg-gray-600 opacity-30"
+                          :style="{ left: `${((milestone.age_50_percentile - milestone.age_25_percentile) / (milestone.age_90_percentile - milestone.age_25_percentile)) * 100}%` }"
+                        ></div>
+                        <div 
+                          class="absolute top-0 bottom-0 w-px bg-gray-600 opacity-30"
+                          :style="{ left: `${((milestone.age_75_percentile - milestone.age_25_percentile) / (milestone.age_90_percentile - milestone.age_25_percentile)) * 100}%` }"
+                        ></div>
+                      </div>
+                      
+                      <!-- Status Marker at Current Age -->
+                      <div 
+                        v-if="currentAge >= 0 && milestone.assessment_status"
+                        class="absolute top-1/2 -translate-y-1/2 z-20"
+                        :style="{ left: `${getAgePosition(currentAge)}%`, transform: 'translate(-50%, -50%)' }"
+                      >
+                        <span 
+                          class="text-xl font-bold drop-shadow-lg"
+                          :class="getStatusMarkerClass(milestone.assessment_status)"
+                        >
+                          {{ getStatusMarker(milestone.assessment_status) }}
+                        </span>
+                      </div>
                       
                       <!-- Current Age Indicator -->
                       <div 
@@ -149,7 +222,7 @@
                         class="absolute top-0 bottom-0 w-0.5 bg-blue-600 z-10"
                         :style="{ left: `${getAgePosition(currentAge)}%` }"
                       >
-                        <div class="absolute -top-1 -left-1 w-3 h-3 bg-blue-600 rounded-full border-2 border-white"></div>
+                        <div class="absolute -top-1 -left-1 w-3 h-3 bg-blue-600 rounded-full border-2 border-white shadow-sm"></div>
                       </div>
                     </div>
                   </div>
@@ -217,21 +290,78 @@ const getDomainName = (domain) => {
 }
 
 const getAgePosition = (age) => {
-  // Convert age in months to percentage position (0-72 months = 0-100%)
-  const maxAge = 72
-  return Math.min(100, (age / maxAge) * 100)
+  // Denver II uses logarithmic scale for 0-24 months, then linear for 24-72 months
+  if (age <= 24) {
+    // Logarithmic scale for 0-24 months (maps to 0-50% of chart)
+    // Using log base 25 to map 0-24 months to 0-50%
+    if (age === 0) return 0
+    const logValue = Math.log(age + 1) / Math.log(25)
+    return Math.min(50, logValue * 50)
+  } else {
+    // Linear scale for 24-72 months (maps to 50-100% of chart)
+    const linearValue = 50 + ((age - 24) / 48) * 50
+    return Math.min(100, linearValue)
+  }
 }
 
-const getBarColor = (status) => {
+// Domain colors (Denver II standard)
+const getDomainColor = (domain, opacity = 1) => {
+  const colors = {
+    'PS': `rgba(59, 130, 246, ${opacity})`,    // Blue
+    'FM': `rgba(239, 68, 68, ${opacity})`,    // Red
+    'L': `rgba(16, 185, 129, ${opacity})`,    // Green
+    'GM': `rgba(245, 158, 11, ${opacity})`    // Yellow/Orange
+  }
+  return colors[domain] || `rgba(156, 163, 175, ${opacity})`
+}
+
+// Get gradient for percentile bar (25% -> 50% -> 75% -> 90%)
+const getPercentileGradient = (milestone, domain) => {
+  const baseColor = getDomainColor(domain, 1)
+  // Extract RGB values
+  const rgbMatch = baseColor.match(/\d+/g)
+  if (!rgbMatch || rgbMatch.length < 3) {
+    return 'linear-gradient(to right, #ffffff, #e5e7eb, #9ca3af, #4b5563)'
+  }
+  
+  const r = parseInt(rgbMatch[0])
+  const g = parseInt(rgbMatch[1])
+  const b = parseInt(rgbMatch[2])
+  
+  // Create gradient: 25% (light) -> 50% -> 75% -> 90% (darker)
+  return `linear-gradient(to right, 
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(${r}, ${g}, ${b}, 0.3) 33%,
+    rgba(${r}, ${g}, ${b}, 0.6) 66%,
+    rgba(${r}, ${g}, ${b}, 0.9) 100%
+  )`
+}
+
+// Get status marker symbol
+const getStatusMarker = (status) => {
   switch (status) {
     case 'yes':
-      return 'bg-green-500'
+      return '✓'
     case 'no':
-      return 'bg-red-500'
+      return '✗'
     case 'sometimes':
-      return 'bg-yellow-500'
+      return 'R'
     default:
-      return 'bg-gray-200'
+      return '—'
+  }
+}
+
+// Get status marker CSS class
+const getStatusMarkerClass = (status) => {
+  switch (status) {
+    case 'yes':
+      return 'text-green-600'
+    case 'no':
+      return 'text-red-600'
+    case 'sometimes':
+      return 'text-yellow-600'
+    default:
+      return 'text-gray-500'
   }
 }
 

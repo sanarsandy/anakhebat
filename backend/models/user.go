@@ -10,6 +10,8 @@ type User struct {
 	PasswordHash string    `json:"-" db:"password_hash"`
 	FullName     string    `json:"full_name" db:"full_name"`
 	Role         string    `json:"role" db:"role"`
+	GoogleID     *string   `json:"-" db:"google_id"`
+	AuthProvider string    `json:"auth_provider" db:"auth_provider"`
 	CreatedAt    time.Time `json:"created_at" db:"created_at"`
 }
 

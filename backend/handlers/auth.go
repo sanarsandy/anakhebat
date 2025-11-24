@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"net/http"
+	"os"
 	"time"
 	"tukem-backend/db"
 	"tukem-backend/models"
@@ -89,7 +90,12 @@ func Login(c echo.Context) error {
 	claims["role"] = user.Role
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix() // 3 days
 
-	t, err := token.SignedString([]byte("secret")) // TODO: Use env var
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		jwtSecret = "secret" // Default for development only
+	}
+
+	t, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to generate token"})
 	}

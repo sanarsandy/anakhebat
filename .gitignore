@@ -264,6 +264,12 @@ __pycache__/
 docs/
 
 # ============================================
+# Project Template
+# ============================================
+# Ignore project template folder
+project-template/
+
+# ============================================
 # Project Specific
 # ============================================
 # PDF exports (if generated locally)

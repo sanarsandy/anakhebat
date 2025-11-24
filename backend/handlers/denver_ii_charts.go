@@ -230,6 +230,43 @@ func GetDenverIIChartGridData(c echo.Context) error {
 		QuestionEn        string  `json:"question_en" db:"question_en"`
 		IsRedFlag         bool    `json:"is_red_flag" db:"is_red_flag"`
 		AssessmentStatus  string  `json:"assessment_status" db:"assessment_status"` // yes, no, sometimes, or empty
+		// Calculated percentile fields for Denver II chart
+		Age25Percentile   int     `json:"age_25_percentile"` // 25% of children reach this milestone
+		Age50Percentile   int     `json:"age_50_percentile"` // 50% of children reach this milestone (median)
+		Age75Percentile   int     `json:"age_75_percentile"` // 75% of children reach this milestone
+		Age90Percentile   int     `json:"age_90_percentile"` // 90% of children reach this milestone
+	}
+
+	// Helper function to calculate percentiles from available data
+	calculatePercentiles := func(ageMonths int, minAgeRange *int, maxAgeRange *int) (int, int, int, int) {
+		// Use age_months as 50% percentile (median)
+		age50 := ageMonths
+		
+		// Calculate 25% percentile
+		var age25 int
+		if minAgeRange != nil && *minAgeRange > 0 {
+			age25 = *minAgeRange
+		} else {
+			// Default: 25% is 2 months before median
+			age25 = ageMonths - 2
+			if age25 < 0 {
+				age25 = 0
+			}
+		}
+		
+		// Calculate 90% percentile
+		var age90 int
+		if maxAgeRange != nil && *maxAgeRange > 0 {
+			age90 = *maxAgeRange
+		} else {
+			// Default: 90% is 2 months after median
+			age90 = ageMonths + 2
+		}
+		
+		// Calculate 75% percentile (interpolation between 50% and 90%)
+		age75 := age50 + (age90-age50)*3/4
+		
+		return age25, age50, age75, age90
 	}
 
 	rows, err := db.DB.Queryx(query, childID)
@@ -247,6 +284,9 @@ func GetDenverIIChartGridData(c echo.Context) error {
 		if err := rows.StructScan(&m); err != nil {
 			continue
 		}
+		// Calculate percentiles
+		m.Age25Percentile, m.Age50Percentile, m.Age75Percentile, m.Age90Percentile = 
+			calculatePercentiles(m.AgeMonths, m.MinAgeRange, m.MaxAgeRange)
 		milestones = append(milestones, m)
 	}
 

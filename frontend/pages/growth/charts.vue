@@ -557,9 +557,15 @@ onUnmounted(() => {
   isMounted.value = false
   
   // Stop all watchers
-  stopTabWatcher()
-  stopLoadingWatcher()
-  stopChildWatcher()
+  if (stopTabWatcher) {
+    stopTabWatcher()
+  }
+  if (stopLoadingWatcher) {
+    stopLoadingWatcher()
+  }
+  if (stopChildWatcher) {
+    stopChildWatcher()
+  }
   
   // Destroy charts
   if (wfaChart) {
@@ -568,6 +574,7 @@ onUnmounted(() => {
     } catch (e) {
       console.warn('Error destroying wfa chart on unmount:', e)
     }
+    wfaChart = null
   }
   if (hfaChart) {
     try {
@@ -575,6 +582,7 @@ onUnmounted(() => {
     } catch (e) {
       console.warn('Error destroying hfa chart on unmount:', e)
     }
+    hfaChart = null
   }
 })
 </script>

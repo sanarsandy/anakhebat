@@ -124,6 +124,8 @@ const stopWatcher = watch(() => childStore.selectedChild, () => {
 
 onUnmounted(() => {
   isMounted.value = false
-  stopWatcher()
+  if (stopWatcher) {
+    stopWatcher()
+  }
 })
 </script>

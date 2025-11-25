@@ -23,9 +23,9 @@
       <div>
         <p class="text-gray-500 text-sm">Berat Badan</p>
         <p class="text-2xl font-bold text-gray-900">{{ measurement.weight }} <span class="text-sm font-normal">kg</span></p>
-        <div v-if="measurement.weight_for_age_zscore !== null" class="flex items-center space-x-2 mt-1">
-          <span class="text-xs px-2 py-1 rounded-full" :class="getStatusBadgeClass(measurement.weight_for_age_zscore)">
-            Z: {{ measurement.weight_for_age_zscore.toFixed(2) }}
+        <div v-if="isValidNumber(measurement.weight_for_age_zscore)" class="flex items-center space-x-2 mt-1">
+          <span class="text-xs px-2 py-1 rounded-full" :class="getZScoreBadgeClass(measurement.weight_for_age_zscore)">
+            Z: {{ formatZScore(measurement.weight_for_age_zscore) }}
           </span>
         </div>
       </div>
@@ -34,9 +34,9 @@
       <div>
         <p class="text-gray-500 text-sm">Tinggi Badan</p>
         <p class="text-2xl font-bold text-gray-900">{{ measurement.height }} <span class="text-sm font-normal">cm</span></p>
-        <div v-if="measurement.height_for_age_zscore !== null" class="flex items-center space-x-2 mt-1">
-          <span class="text-xs px-2 py-1 rounded-full" :class="getStatusBadgeClass(measurement.height_for_age_zscore)">
-            Z: {{ measurement.height_for_age_zscore.toFixed(2) }}
+        <div v-if="isValidNumber(measurement.height_for_age_zscore)" class="flex items-center space-x-2 mt-1">
+          <span class="text-xs px-2 py-1 rounded-full" :class="getZScoreBadgeClass(measurement.height_for_age_zscore)">
+            Z: {{ formatZScore(measurement.height_for_age_zscore) }}
           </span>
         </div>
       </div>
@@ -50,13 +50,13 @@
 
     <!-- Status Badges -->
     <div class="flex flex-wrap gap-2">
-      <span v-if="measurement.nutritional_status" class="text-xs px-3 py-1 rounded-full" :class="getStatusTextClass(measurement.weight_for_age_zscore)">
+      <span v-if="measurement.nutritional_status" class="text-xs px-3 py-1 rounded-full" :class="getZScoreTextClass(measurement.weight_for_age_zscore)">
         {{ measurement.nutritional_status }}
       </span>
-      <span v-if="measurement.height_status" class="text-xs px-3 py-1 rounded-full" :class="getStatusTextClass(measurement.height_for_age_zscore)">
+      <span v-if="measurement.height_status" class="text-xs px-3 py-1 rounded-full" :class="getZScoreTextClass(measurement.height_for_age_zscore)">
         Tinggi: {{ measurement.height_status }}
       </span>
-      <span v-if="measurement.weight_for_height_status" class="text-xs px-3 py-1 rounded-full" :class="getStatusTextClass(measurement.weight_for_height_zscore)">
+      <span v-if="measurement.weight_for_height_status" class="text-xs px-3 py-1 rounded-full" :class="getZScoreTextClass(measurement.weight_for_height_zscore)">
         {{ measurement.weight_for_height_status }}
       </span>
     </div>
@@ -64,6 +64,9 @@
 </template>
 
 <script setup>
+import { isValidNumber, formatZScore, safeFormatDate } from '~/composables/useSafeData'
+import { getZScoreBadgeClass, getZScoreTextClass, getZScoreBorderColor } from '~/utils/validation'
+
 const props = defineProps({
   measurement: {
     type: Object,
@@ -78,38 +81,15 @@ const handleDelete = () => {
   emit('delete', props.measurement)
 }
 
+// Use utility function for border color
 const borderColor = computed(() => {
-  const weightZ = props.measurement.weight_for_age_zscore
-  const heightZ = props.measurement.height_for_age_zscore
-  
-  if (weightZ < -2 || heightZ < -2 || weightZ > 2 || heightZ > 2) {
-    return 'border-red-500'
-  } else if (weightZ < -1 || heightZ < -1 || weightZ > 1 || heightZ > 1) {
-    return 'border-amber-500'
-  }
-  return 'border-emerald-500'
+  if (!props.measurement) return 'border-gray-500'
+  return getZScoreBorderColor(
+    props.measurement.weight_for_age_zscore,
+    props.measurement.height_for_age_zscore
+  )
 })
 
-const getStatusBadgeClass = (zscore) => {
-  if (zscore < -2 || zscore > 2) {
-    return 'bg-red-100 text-red-700'
-  } else if (zscore < -1 || zscore > 1) {
-    return 'bg-amber-100 text-amber-700'
-  }
-  return 'bg-emerald-100 text-emerald-700'
-}
-
-const getStatusTextClass = (zscore) => {
-  if (zscore < -2 || zscore > 2) {
-    return 'bg-red-50 text-red-700 border border-red-200'
-  } else if (zscore < -1 || zscore > 1) {
-    return 'bg-amber-50 text-amber-700 border border-amber-200'
-  }
-  return 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-}
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
-}
+// Use utility function for date formatting
+const formatDate = safeFormatDate
 </script>

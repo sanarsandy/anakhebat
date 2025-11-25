@@ -51,3 +51,18 @@ type OTPResponse struct {
 	ExpiresIn int    `json:"expires_in,omitempty"`
 	RetryAfter int   `json:"retry_after,omitempty"`
 }
+
+// Profile Request Models
+type UpdateProfileRequest struct {
+	FullName string `json:"full_name,omitempty"`
+	Email    string `json:"email,omitempty"`
+}
+
+type VerifyPhoneRequest struct {
+	PhoneNumber string `json:"phone_number" validate:"required"`
+}
+
+type ConfirmPhoneVerificationRequest struct {
+	PhoneNumber string `json:"phone_number" validate:"required"`
+	OTP         string `json:"otp" validate:"required,len=6"`
+}

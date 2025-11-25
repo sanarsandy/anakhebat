@@ -96,12 +96,20 @@ Tim Tukem`, otpCode)
 func (s *WhatsAppService) sendViaGateway(phoneNumber string, message string) error {
 	// Gateway hanya perlu form-data dengan number dan message
 	// Nomor yang berawalan 0 akan otomatis di-format jadi 62 oleh gateway
-	// Coba format nomor: hapus + jika ada, karena gateway akan handle format sendiri
+	// Format nomor: coba beberapa format untuk kompatibilitas
 	
-	// Format nomor: hapus + jika ada
+	// Format nomor: coba dengan 0 di depan (0812...) karena gateway mungkin butuh format ini
 	formattedNumber := phoneNumber
-	if len(phoneNumber) > 0 && phoneNumber[0] == '+' {
-		formattedNumber = phoneNumber[1:] // Hapus +
+	
+	// Jika nomor dimulai dengan +62, ubah jadi 0
+	if len(phoneNumber) > 3 && phoneNumber[:3] == "+62" {
+		formattedNumber = "0" + phoneNumber[3:]
+	} else if len(phoneNumber) > 2 && phoneNumber[:2] == "62" {
+		// Jika dimulai dengan 62 (tanpa +), ubah jadi 0
+		formattedNumber = "0" + phoneNumber[2:]
+	} else if len(phoneNumber) > 0 && phoneNumber[0] == '+' {
+		// Jika dimulai dengan + selain +62, hapus +
+		formattedNumber = phoneNumber[1:]
 	}
 	
 	fmt.Printf("[WhatsApp Debug] Original number: %s, Formatted: %s\n", phoneNumber, formattedNumber)

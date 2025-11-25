@@ -7,6 +7,35 @@
         <p class="text-gray-600 mt-2">Selamat datang di Tukem - Tumbuh Kembang Anak</p>
       </div>
 
+      <!-- Phone Number Notification (for Google login users) -->
+      <div 
+        v-if="shouldShowPhoneNotification" 
+        class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl shadow-sm p-4 flex items-start gap-4"
+      >
+        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="text-sm font-semibold text-gray-900 mb-1">
+            Lengkapi Nomor WhatsApp Anda
+          </h3>
+          <p class="text-sm text-gray-600 mb-3">
+            Tambahkan nomor WhatsApp untuk mendapatkan notifikasi dan akses fitur lengkap aplikasi.
+          </p>
+          <NuxtLink 
+            to="/profile" 
+            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Update Profil
+          </NuxtLink>
+        </div>
+      </div>
+
       <!-- No Child State -->
       <div v-if="!childStore.hasChildren" class="bg-white rounded-xl shadow-sm p-12 text-center">
         <div class="text-6xl mb-4">👶</div>
@@ -136,16 +165,16 @@
             <!-- Next Immunization Cards -->
             <div 
               v-for="imm in nextImmunizations" 
-              :key="imm.schedule.id"
+              :key="imm?.schedule?.id || Math.random()"
               class="p-4 rounded-lg border-2 transition hover:shadow-md"
               :class="getNextImmunizationCardClass(imm)"
             >
-              <div class="flex items-start justify-between">
+              <div v-if="imm && imm.schedule" class="flex items-start justify-between">
                 <div class="flex-1">
                   <div class="flex items-center gap-2 mb-2">
                     <h4 class="font-bold text-gray-900">
-                      {{ imm.schedule.name_id || imm.schedule.name }}
-                      <span v-if="imm.schedule.dose_number > 1" class="text-sm font-normal text-gray-600">
+                      {{ imm.schedule.name_id || imm.schedule.name || 'Imunisasi' }}
+                      <span v-if="imm.schedule.dose_number && imm.schedule.dose_number > 1" class="text-sm font-normal text-gray-600">
                         - Dosis {{ imm.schedule.dose_number }}
                       </span>
                     </h4>
@@ -310,6 +339,8 @@
 </template>
 
 <script setup>
+import { isValidString, filterValidItems, safeFormatDate } from '~/composables/useSafeData'
+
 definePageMeta({
   middleware: 'auth'
 })
@@ -321,6 +352,24 @@ const milestoneStore = useMilestoneStore()
 const immunizationStore = useImmunizationStore()
 
 const downloadingPDF = ref(false)
+
+// Check if should show phone notification
+const shouldShowPhoneNotification = computed(() => {
+  try {
+    const user = authStore.user
+    if (!user || typeof user !== 'object') return false
+    
+    // Show if user logged in via Google and doesn't have phone number
+    const isGoogleLogin = user.auth_provider === 'google'
+    const phoneNumber = user.phone_number
+    const hasNoPhone = !isValidString(phoneNumber)
+    
+    return isGoogleLogin && hasNoPhone
+  } catch (error) {
+    console.error('Error in shouldShowPhoneNotification:', error)
+    return false
+  }
+})
 
 const downloadPDF = async () => {
   if (!childStore.selectedChild) {
@@ -366,154 +415,166 @@ const downloadPDF = async () => {
 
 const { calculateCorrectedAge } = useCorrectedAge()
 
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
-}
+// Use utility function for date formatting
+const formatDate = safeFormatDate
 
 // Get next immunizations: yang terlewat, bulan ini, atau bulan depan
 const nextImmunizations = computed(() => {
-  // Get current age untuk filter berdasarkan periode waktu
-  const currentAgeMonths = immunizationStore.ageMonths || 
-    (ageInfo.value?.chronologicalDisplay ? 
-      parseInt(ageInfo.value.chronologicalDisplay.replace(/[^\d]/g, '')) || 0 : 0)
-  
-  // Gabungkan semua yang belum selesai
-  const all = [
-    ...immunizationStore.overdueImmunizations, // Yang terlambat
-    ...immunizationStore.upcomingImmunizations, // Yang akan datang
-    ...immunizationStore.pendingImmunizations // Yang pending
-  ]
-  
-  // Remove duplicates (same schedule.id)
-  const seen = new Set()
-  const unique = all.filter(item => {
-    if (seen.has(item.schedule.id)) {
-      return false
-    }
-    seen.add(item.schedule.id)
-    return true
-  })
-  
-  // Filter berdasarkan periode waktu yang relevan
-  const filtered = unique.filter(item => {
-    const ageOptimal = item.schedule.age_optimal_months || 0
+  try {
+    // Get current age untuk filter berdasarkan periode waktu
+    const currentAgeMonths = immunizationStore.ageMonths || 
+      (ageInfo.value?.chronologicalDisplay ? 
+        parseInt(ageInfo.value.chronologicalDisplay.replace(/[^\d]/g, '')) || 0 : 0)
     
-    // 1. Tampilkan semua yang overdue (terlewat) - status overdue dari backend
-    if (item.status === 'overdue') {
+    // Gabungkan semua yang belum selesai
+    const all = [
+      ...(immunizationStore.overdueImmunizations || []), // Yang terlambat
+      ...(immunizationStore.upcomingImmunizations || []), // Yang akan datang
+      ...(immunizationStore.pendingImmunizations || []) // Yang pending
+    ]
+    
+    // Filter out items with null/undefined schedule using utility function
+    const validItems = filterValidItems(all, item => 
+      item?.schedule?.id != null
+    )
+    
+    // Remove duplicates (same schedule.id) - using optional chaining
+    const seen = new Set()
+    const unique = validItems.filter(item => {
+      const scheduleId = item?.schedule?.id
+      if (!scheduleId) return false
+      if (seen.has(scheduleId)) {
+        return false
+      }
+      seen.add(scheduleId)
       return true
-    }
-    
-    // Helper: cek apakah sudah terlewat waktunya berdasarkan due_date
-    const today = new Date()
-    today.setHours(0, 0, 0, 0) // Reset time untuk perbandingan tanggal saja
-    
-    // 2. Tampilkan yang sudah terlewat waktunya (due date sudah lewat tapi belum selesai)
-    if (item.due_date) {
-      const dueDate = new Date(item.due_date)
-      dueDate.setHours(0, 0, 0, 0)
+    })
+  
+    // Filter berdasarkan periode waktu yang relevan
+    const filtered = unique.filter(item => {
+      if (!item?.schedule) return false
+      const ageOptimal = item.schedule.age_optimal_months ?? 0
       
-      // Jika due date sudah lewat (hari ini atau sebelumnya) dan belum selesai
-      if (dueDate <= today && item.status !== 'completed') {
+      // 1. Tampilkan semua yang overdue (terlewat) - status overdue dari backend
+      if (item.status === 'overdue') {
         return true
       }
-    }
-    
-    // 3. Tampilkan yang usia optimalnya sudah terlewat (usia optimal < umur anak saat ini)
-    // Contoh: Hepatitis B-0 usia optimal 0 bulan, jika anak sudah > 0 bulan = terlewat
-    if (ageOptimal < currentAgeMonths && item.status !== 'completed') {
-      return true
-    }
-    
-    // 4. Tampilkan yang usia optimalnya di bulan ini (currentAgeMonths)
-    if (ageOptimal === currentAgeMonths) {
-      return true
-    }
-    
-    // 5. Jika tidak ada yang untuk bulan ini (dan tidak terlewat), tampilkan yang untuk bulan depan
-    // (cek apakah ada yang untuk bulan ini terlebih dulu yang tidak terlewat)
-    
-    const hasCurrentMonthNonPast = unique.some(i => {
-      const isOverdue = i.status === 'overdue'
-      const isPastDue = i.due_date && new Date(i.due_date) <= today && i.status !== 'completed'
-      const ageOpt = i.schedule.age_optimal_months || 0
-      const isPastAge = ageOpt < currentAgeMonths
-      const isCurrentMonth = ageOpt === currentAgeMonths
-      return isCurrentMonth && !isOverdue && !isPastDue && !isPastAge
-    })
-    
-    if (!hasCurrentMonthNonPast && ageOptimal === currentAgeMonths + 1) {
-      return true
-    }
-    
-    return false
-  })
-  
-  // Sort by: 
-  // 1. Overdue / terlewat waktunya first (yang terlambat paling penting)
-  // 2. Usia optimal (yang sudah lewat, kemudian bulan ini, kemudian bulan depan)
-  // 3. Due date (earliest first)
-  // 4. Priority (high first)
-  return filtered.sort((a, b) => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    
-    // Helper: cek apakah imunisasi sudah terlewat berdasarkan due_date
-    const isAPastDue = a.due_date && new Date(a.due_date) <= today && a.status !== 'completed'
-    const isBPastDue = b.due_date && new Date(b.due_date) <= today && b.status !== 'completed'
-    
-    // Helper: cek apakah usia optimal sudah terlewat
-    const ageA = a.schedule.age_optimal_months || 0
-    const ageB = b.schedule.age_optimal_months || 0
-    const isAPastAge = ageA < currentAgeMonths && a.status !== 'completed'
-    const isBPastAge = ageB < currentAgeMonths && b.status !== 'completed'
-    
-    // 1. Prioritaskan overdue atau yang sudah terlewat waktunya (due_date atau usia optimal)
-    const isATerlewat = a.status === 'overdue' || isAPastDue || isAPastAge
-    const isBTerlewat = b.status === 'overdue' || isBPastDue || isBPastAge
-    
-    if (isATerlewat && !isBTerlewat) return -1
-    if (!isATerlewat && isBTerlewat) return 1
-    
-    // 2. Sort by usia optimal: yang sudah lewat → bulan ini → bulan depan
-    // (ageA dan ageB sudah didefinisikan di atas, tidak perlu didefinisikan lagi)
-    const isAPast = ageA < currentAgeMonths
-    const isBPast = ageB < currentAgeMonths
-    const isACurrent = ageA === currentAgeMonths
-    const isBCurrent = ageB === currentAgeMonths
-    const isANext = ageA === currentAgeMonths + 1
-    const isBNext = ageB === currentAgeMonths + 1
-    
-    // Prioritas: sudah lewat → bulan ini → bulan depan
-    if (isAPast && !isBPast) return -1
-    if (!isAPast && isBPast) return 1
-    
-    if (isACurrent && !isBCurrent && !isBPast) return -1
-    if (!isACurrent && !isAPast && isBCurrent) return 1
-    
-    if (isANext && !isBNext && !isBCurrent && !isBPast) return -1
-    if (!isANext && !isACurrent && !isAPast && isBNext) return 1
-    
-    // Jika sudah lewat keduanya, prioritaskan yang paling lama lewatnya
-    if (isAPast && isBPast) {
-      return (currentAgeMonths - ageA) - (currentAgeMonths - ageB)
-    }
-    
-    // 3. Jika periode sama, sort by due date (earliest first)
-    if (a.due_date && b.due_date) {
-      const dateA = new Date(a.due_date).getTime()
-      const dateB = new Date(b.due_date).getTime()
-      if (dateA !== dateB) {
-        return dateA - dateB
+      
+      // Helper: cek apakah sudah terlewat waktunya berdasarkan due_date
+      const today = new Date()
+      today.setHours(0, 0, 0, 0) // Reset time untuk perbandingan tanggal saja
+      
+      // 2. Tampilkan yang sudah terlewat waktunya (due date sudah lewat tapi belum selesai)
+      if (item.due_date) {
+        const dueDate = new Date(item.due_date)
+        dueDate.setHours(0, 0, 0, 0)
+        
+        // Jika due date sudah lewat (hari ini atau sebelumnya) dan belum selesai
+        if (dueDate <= today && item.status !== 'completed') {
+          return true
+        }
       }
-    } else if (a.due_date && !b.due_date) return -1
-    else if (!a.due_date && b.due_date) return 1
+      
+      // 3. Tampilkan yang usia optimalnya sudah terlewat (usia optimal < umur anak saat ini)
+      // Contoh: Hepatitis B-0 usia optimal 0 bulan, jika anak sudah > 0 bulan = terlewat
+      if (ageOptimal < currentAgeMonths && item.status !== 'completed') {
+        return true
+      }
+      
+      // 4. Tampilkan yang usia optimalnya di bulan ini (currentAgeMonths)
+      if (ageOptimal === currentAgeMonths) {
+        return true
+      }
+      
+      // 5. Jika tidak ada yang untuk bulan ini (dan tidak terlewat), tampilkan yang untuk bulan depan
+      // (cek apakah ada yang untuk bulan ini terlebih dulu yang tidak terlewat)
+      const hasCurrentMonthNonPast = unique.some(i => {
+        if (!i?.schedule) return false
+        const isOverdue = i.status === 'overdue'
+        const isPastDue = i.due_date && new Date(i.due_date) <= today && i.status !== 'completed'
+        const ageOpt = i.schedule.age_optimal_months ?? 0
+        const isPastAge = ageOpt < currentAgeMonths
+        const isCurrentMonth = ageOpt === currentAgeMonths
+        return isCurrentMonth && !isOverdue && !isPastDue && !isPastAge
+      })
+      
+      if (!hasCurrentMonthNonPast && ageOptimal === currentAgeMonths + 1) {
+        return true
+      }
+      
+      return false
+    })
+  
+    // Sort by: 
+    // 1. Overdue / terlewat waktunya first (yang terlambat paling penting)
+    // 2. Usia optimal (yang sudah lewat, kemudian bulan ini, kemudian bulan depan)
+    // 3. Due date (earliest first)
+    // 4. Priority (high first)
+    return filtered.sort((a, b) => {
+      if (!a?.schedule || !b?.schedule) return 0
+      
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      
+      // Helper: cek apakah imunisasi sudah terlewat berdasarkan due_date
+      const isAPastDue = a.due_date && new Date(a.due_date) <= today && a.status !== 'completed'
+      const isBPastDue = b.due_date && new Date(b.due_date) <= today && b.status !== 'completed'
+      
+      // Helper: cek apakah usia optimal sudah terlewat
+      const ageA = a.schedule.age_optimal_months ?? 0
+      const ageB = b.schedule.age_optimal_months ?? 0
+      const isAPastAge = ageA < currentAgeMonths && a.status !== 'completed'
+      const isBPastAge = ageB < currentAgeMonths && b.status !== 'completed'
+      
+      // 1. Prioritaskan overdue atau yang sudah terlewat waktunya (due_date atau usia optimal)
+      const isATerlewat = a.status === 'overdue' || isAPastDue || isAPastAge
+      const isBTerlewat = b.status === 'overdue' || isBPastDue || isBPastAge
     
-    // 4. Jika semua sama, sort by priority (high first)
-    const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 }
-    return (priorityOrder[a.schedule.priority] || 1) - (priorityOrder[b.schedule.priority] || 1)
-  }).slice(0, 3) // Maksimal 3 item di dashboard
+      if (isATerlewat && !isBTerlewat) return -1
+      if (!isATerlewat && isBTerlewat) return 1
+      
+      // 2. Sort by usia optimal: yang sudah lewat → bulan ini → bulan depan
+      // (ageA dan ageB sudah didefinisikan di atas, tidak perlu didefinisikan lagi)
+      const isAPast = ageA < currentAgeMonths
+      const isBPast = ageB < currentAgeMonths
+      const isACurrent = ageA === currentAgeMonths
+      const isBCurrent = ageB === currentAgeMonths
+      const isANext = ageA === currentAgeMonths + 1
+      const isBNext = ageB === currentAgeMonths + 1
+      
+      // Prioritas: sudah lewat → bulan ini → bulan depan
+      if (isAPast && !isBPast) return -1
+      if (!isAPast && isBPast) return 1
+      
+      if (isACurrent && !isBCurrent && !isBPast) return -1
+      if (!isACurrent && !isAPast && isBCurrent) return 1
+      
+      if (isANext && !isBNext && !isBCurrent && !isBPast) return -1
+      if (!isANext && !isACurrent && !isAPast && isBNext) return 1
+      
+      // Jika sudah lewat keduanya, prioritaskan yang paling lama lewatnya
+      if (isAPast && isBPast) {
+        return (currentAgeMonths - ageA) - (currentAgeMonths - ageB)
+      }
+      
+      // 3. Jika periode sama, sort by due date (earliest first)
+      if (a.due_date && b.due_date) {
+        const dateA = new Date(a.due_date).getTime()
+        const dateB = new Date(b.due_date).getTime()
+        if (dateA !== dateB) {
+          return dateA - dateB
+        }
+      } else if (a.due_date && !b.due_date) return -1
+      else if (!a.due_date && b.due_date) return 1
+      
+      // 4. Jika semua sama, sort by priority (high first)
+      const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 }
+      return (priorityOrder[a.schedule.priority] || 1) - (priorityOrder[b.schedule.priority] || 1)
+    }).slice(0, 3) // Maksimal 3 item di dashboard
+  } catch (error) {
+    console.error('Error in nextImmunizations computed:', error)
+    return []
+  }
 })
 
 const getStatusLabel = (status) => {
@@ -537,6 +598,7 @@ const getStatusBadgeClass = (status) => {
 }
 
 const getNextImmunizationCardClass = (imm) => {
+  if (!imm) return 'border-gray-300 bg-gray-50'
   if (imm.status === 'overdue') {
     return 'border-red-300 bg-red-50'
   }
@@ -548,20 +610,29 @@ const getNextImmunizationCardClass = (imm) => {
 
 // Compute age info for selected child
 const ageInfo = computed(() => {
-  if (!childStore.selectedChild?.dob) {
+  try {
+    if (!childStore.selectedChild?.dob) {
+      return {
+        chronologicalDisplay: '',
+        correctedDisplay: null,
+        useCorrected: false
+      }
+    }
+    
+    return calculateCorrectedAge(
+      childStore.selectedChild.dob,
+      childStore.selectedChild.is_premature || false,
+      childStore.selectedChild.gestational_age,
+      undefined // Use current date
+    )
+  } catch (error) {
+    console.error('Error in ageInfo computed:', error)
     return {
       chronologicalDisplay: '',
       correctedDisplay: null,
       useCorrected: false
     }
   }
-  
-  return calculateCorrectedAge(
-    childStore.selectedChild.dob,
-    childStore.selectedChild.is_premature || false,
-    childStore.selectedChild.gestational_age,
-    undefined // Use current date
-  )
 })
 
 // Track if component is mounted to prevent updates after unmount
@@ -604,7 +675,9 @@ const stopWatcher = watch(() => childStore.selectedChild, async (newChild) => {
 onUnmounted(() => {
   isMounted.value = false
   isInitialized.value = false
-  stopWatcher()
+  if (stopWatcher) {
+    stopWatcher()
+  }
 })
 
 onMounted(async () => {

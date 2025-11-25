@@ -37,16 +37,16 @@
           <p class="text-emerald-100 text-sm">Berat Badan</p>
           <p class="text-3xl font-bold">{{ measurementStore.latestMeasurement.weight }} kg</p>
           <p class="text-emerald-100 text-sm mt-1">{{ measurementStore.latestMeasurement.nutritional_status || '-' }}</p>
-          <p v-if="measurementStore.latestMeasurement.weight_for_age_zscore !== null && measurementStore.latestMeasurement.weight_for_age_zscore !== undefined" class="text-emerald-200 text-xs mt-1">
-            Z-Score: {{ measurementStore.latestMeasurement.weight_for_age_zscore.toFixed(2) }}
+          <p v-if="isValidNumber(measurementStore.latestMeasurement.weight_for_age_zscore)" class="text-emerald-200 text-xs mt-1">
+            Z-Score: {{ formatZScore(measurementStore.latestMeasurement.weight_for_age_zscore) }}
           </p>
         </div>
         <div>
           <p class="text-emerald-100 text-sm">Tinggi Badan</p>
           <p class="text-3xl font-bold">{{ measurementStore.latestMeasurement.height }} cm</p>
           <p class="text-emerald-100 text-sm mt-1">{{ measurementStore.latestMeasurement.height_status || '-' }}</p>
-          <p v-if="measurementStore.latestMeasurement.height_for_age_zscore !== null && measurementStore.latestMeasurement.height_for_age_zscore !== undefined" class="text-emerald-200 text-xs mt-1">
-            Z-Score: {{ measurementStore.latestMeasurement.height_for_age_zscore.toFixed(2) }}
+          <p v-if="isValidNumber(measurementStore.latestMeasurement.height_for_age_zscore)" class="text-emerald-200 text-xs mt-1">
+            Z-Score: {{ formatZScore(measurementStore.latestMeasurement.height_for_age_zscore) }}
           </p>
         </div>
         <div>
@@ -88,7 +88,7 @@
       <div class="grid md:grid-cols-2 gap-6">
         <MeasurementCard 
           v-for="measurement in measurementStore.sortedMeasurements" 
-          :key="measurement.id"
+          :key="measurement?.id || Math.random()"
           :measurement="measurement"
           @delete="confirmDelete"
         />
@@ -120,6 +120,8 @@
 </template>
 
 <script setup>
+import { isValidNumber, formatZScore, safeFormatDate } from '~/composables/useSafeData'
+
 definePageMeta({
   middleware: 'auth'
 })
@@ -182,23 +184,8 @@ const deleteMeasurement = async () => {
   }
 }
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
-}
-
-onMounted(async () => {
-  console.log('Growth page mounted, selected child:', childStore.selectedChild)
-  if (childStore.selectedChild) {
-    console.log('Fetching measurements for child:', childStore.selectedChild.id)
-    await Promise.all([
-      measurementStore.fetchMeasurements(childStore.selectedChild.id),
-      measurementStore.fetchLatestMeasurement(childStore.selectedChild.id)
-    ])
-    console.log('Measurements after fetch:', measurementStore.measurements)
-    console.log('Has measurements:', measurementStore.hasMeasurements)
-  }
-})
+// Use utility function for date formatting
+const formatDate = safeFormatDate
 
 // Track if component is mounted
 const isMounted = ref(false)
@@ -234,12 +221,35 @@ const stopWatcher = watch(() => childStore.selectedChild, async (newChild) => {
   }
 }, { immediate: false })
 
-onMounted(() => {
+onMounted(async () => {
   isMounted.value = true
+  
+  console.log('Growth page mounted, selected child:', childStore.selectedChild)
+  if (childStore.selectedChild) {
+    console.log('Fetching measurements for child:', childStore.selectedChild.id)
+    try {
+      await Promise.all([
+        measurementStore.fetchMeasurements(childStore.selectedChild.id),
+        measurementStore.fetchLatestMeasurement(childStore.selectedChild.id)
+      ])
+      
+      // Guard: Check if still mounted after async operation
+      if (!isMounted.value) return
+      
+      console.log('Measurements after fetch:', measurementStore.measurements)
+      console.log('Has measurements:', measurementStore.hasMeasurements)
+    } catch (error) {
+      if (isMounted.value) {
+        console.error('Error fetching initial measurements:', error)
+      }
+    }
+  }
 })
 
 onUnmounted(() => {
   isMounted.value = false
-  stopWatcher()
+  if (stopWatcher) {
+    stopWatcher()
+  }
 })
 </script>

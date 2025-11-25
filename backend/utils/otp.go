@@ -67,3 +67,24 @@ func IsOTPExpired(expiresAt time.Time) bool {
 	return time.Now().After(expiresAt)
 }
 
+// IsValidEmail validates email format
+func IsValidEmail(email string) bool {
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
+	return emailRegex.MatchString(email)
+}
+
+// IntToString converts integer to string
+func IntToString(n int) string {
+	return fmt.Sprintf("%d", n)
+}
+
+// JoinStrings joins string slice with separator
+func JoinStrings(strs []string, sep string) string {
+	return strings.Join(strs, sep)
+}
+
+// GetCurrentTime returns current time
+func GetCurrentTime() time.Time {
+	return time.Now()
+}
+

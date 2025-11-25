@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 	"tukem-backend/db"
 	"tukem-backend/models"
@@ -110,9 +111,23 @@ func RequestOTP(c echo.Context) error {
 	if err != nil {
 		// Log error - this is important for debugging
 		c.Logger().Errorf("Failed to send WhatsApp OTP: %v", err)
-		// Still return success since OTP is stored in database
-		// User can still verify OTP manually if needed
-		// In production, you might want to handle this differently
+		// Check if it's a gateway error (chat not initiated)
+		errorMsg := err.Error()
+		if strings.Contains(errorMsg, "Lid is missing in chat table") || 
+		   strings.Contains(errorMsg, "chat table") ||
+		   strings.Contains(errorMsg, "belum pernah") {
+			// This means the number hasn't chatted with the gateway bot yet
+			// Return error with helpful message
+			return c.JSON(http.StatusBadRequest, models.OTPResponse{
+				Success: false,
+				Error:   "Nomor WhatsApp Anda belum pernah mengirim pesan ke bot kami. Silakan kirim pesan ke nomor bot terlebih dahulu, kemudian coba request OTP lagi.",
+			})
+		}
+		// For other gateway errors, return error but keep OTP in DB for manual verification
+		return c.JSON(http.StatusBadGateway, models.OTPResponse{
+			Success: false,
+			Error:   "Gagal mengirim OTP melalui WhatsApp. Silakan coba lagi nanti atau hubungi administrator.",
+		})
 	}
 
 	return c.JSON(http.StatusOK, models.OTPResponse{
@@ -323,7 +338,23 @@ func ResendOTP(c echo.Context) error {
 	if err != nil {
 		// Log error - this is important for debugging
 		c.Logger().Errorf("Failed to send WhatsApp OTP (resend): %v", err)
-		// Still return success since OTP is stored in database
+		// Check if it's a gateway error (chat not initiated)
+		errorMsg := err.Error()
+		if strings.Contains(errorMsg, "Lid is missing in chat table") || 
+		   strings.Contains(errorMsg, "chat table") ||
+		   strings.Contains(errorMsg, "belum pernah") {
+			// This means the number hasn't chatted with the gateway bot yet
+			// Return error with helpful message
+			return c.JSON(http.StatusBadRequest, models.OTPResponse{
+				Success: false,
+				Error:   "Nomor WhatsApp Anda belum pernah mengirim pesan ke bot kami. Silakan kirim pesan ke nomor bot terlebih dahulu, kemudian coba request OTP lagi.",
+			})
+		}
+		// For other gateway errors, return error but keep OTP in DB for manual verification
+		return c.JSON(http.StatusBadGateway, models.OTPResponse{
+			Success: false,
+			Error:   "Gagal mengirim OTP melalui WhatsApp. Silakan coba lagi nanti atau hubungi administrator.",
+		})
 	}
 
 	return c.JSON(http.StatusOK, models.OTPResponse{

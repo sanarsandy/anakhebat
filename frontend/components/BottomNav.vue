@@ -56,6 +56,20 @@
         </div>
         <span class="text-xs mt-1 font-medium" :class="isActive('/development') ? 'text-indigo-600' : 'text-gray-500'">Kembang</span>
       </NuxtLink>
+
+      <NuxtLink 
+        to="/profile" 
+        class="flex flex-col items-center justify-center flex-1 py-2 relative group transition-colors"
+        :class="isActive('/profile') ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'"
+      >
+        <div class="relative">
+          <svg class="w-6 h-6 transition-transform group-active:scale-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" :stroke-width="isActive('/profile') ? '2.5' : '2'">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <div v-if="isActive('/profile')" class="absolute -top-1 -right-1 w-2 h-2 bg-indigo-600 rounded-full"></div>
+        </div>
+        <span class="text-xs mt-1 font-medium" :class="isActive('/profile') ? 'text-indigo-600' : 'text-gray-500'">Profil</span>
+      </NuxtLink>
     </div>
   </nav>
 </template>

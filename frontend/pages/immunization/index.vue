@@ -385,18 +385,53 @@ const submitRecord = async () => {
   }
 }
 
+// Track if component is mounted
+const isMounted = ref(false)
+
+// Watch for child change
+const stopWatcher = watch(() => childStore.selectedChild, async (newChild) => {
+  // Guard: Don't update if component is unmounted
+  if (!isMounted.value) return
+  
+  if (newChild) {
+    try {
+      await immunizationStore.fetchSchedule(newChild.id)
+      
+      // Guard again after async operation
+      if (!isMounted.value) return
+    } catch (error) {
+      if (isMounted.value) {
+        console.error('Error fetching immunization schedule:', error)
+      }
+    }
+  } else {
+    if (isMounted.value) {
+      immunizationStore.clearSchedule()
+    }
+  }
+}, { immediate: false })
+
 onMounted(async () => {
+  isMounted.value = true
+  
   if (childStore.selectedChild) {
-    await immunizationStore.fetchSchedule(childStore.selectedChild.id)
+    try {
+      await immunizationStore.fetchSchedule(childStore.selectedChild.id)
+      
+      // Guard: Check if still mounted after async operation
+      if (!isMounted.value) return
+    } catch (error) {
+      if (isMounted.value) {
+        console.error('Error fetching initial immunization schedule:', error)
+      }
+    }
   }
 })
 
-// Watch for child change
-watch(() => childStore.selectedChild, async (newChild) => {
-  if (newChild) {
-    await immunizationStore.fetchSchedule(newChild.id)
-  } else {
-    immunizationStore.clearSchedule()
+onUnmounted(() => {
+  isMounted.value = false
+  if (stopWatcher) {
+    stopWatcher()
   }
 })
 </script>

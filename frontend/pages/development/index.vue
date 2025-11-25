@@ -154,15 +154,6 @@ const childStore = useChildStore()
 const milestoneStore = useMilestoneStore()
 const recommendationStore = useRecommendationStore()
 
-onMounted(async () => {
-  if (childStore.selectedChild) {
-    await Promise.all([
-      milestoneStore.fetchSummary(childStore.selectedChild.id),
-      recommendationStore.fetchRecommendations(childStore.selectedChild.id)
-    ])
-  }
-})
-
 // Track if component is mounted
 const isMounted = ref(false)
 
@@ -186,17 +177,37 @@ const stopWatcher = watch(() => childStore.selectedChild, async (newChild) => {
       }
     }
   } else {
-    recommendationStore.clearRecommendations()
+    if (isMounted.value) {
+      recommendationStore.clearRecommendations()
+    }
   }
-})
+}, { immediate: false })
 
-onMounted(() => {
+onMounted(async () => {
   isMounted.value = true
+  
+  if (childStore.selectedChild) {
+    try {
+      await Promise.all([
+        milestoneStore.fetchSummary(childStore.selectedChild.id),
+        recommendationStore.fetchRecommendations(childStore.selectedChild.id)
+      ])
+      
+      // Guard: Check if still mounted after async operation
+      if (!isMounted.value) return
+    } catch (error) {
+      if (isMounted.value) {
+        console.error('Error fetching initial data:', error)
+      }
+    }
+  }
 })
 
 onUnmounted(() => {
   isMounted.value = false
-  stopWatcher()
+  if (stopWatcher) {
+    stopWatcher()
+  }
 })
 
 // Force update for HMR

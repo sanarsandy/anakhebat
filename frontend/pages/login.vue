@@ -39,8 +39,11 @@
                 <p class="mt-1 text-xs text-gray-500">Format: +62xxxxxxxxxxx</p>
               </div>
 
-              <div v-if="error" class="text-red-500 text-sm text-center">
-                {{ error }}
+              <!-- Error Message -->
+              <div v-if="error" class="text-red-500 text-sm">
+                <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p class="font-medium">{{ error }}</p>
+                </div>
               </div>
 
               <button 

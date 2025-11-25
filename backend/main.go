@@ -105,6 +105,12 @@ func EchoServer() *echo.Echo {
 		})
 	})
 
+	// User Profile Routes
+	api.GET("/user/profile", handlers.GetUserProfile)
+	api.PUT("/user/profile", handlers.UpdateUserProfile)
+	api.POST("/user/verify-phone", handlers.RequestPhoneVerification)
+	api.POST("/user/verify-phone/confirm", handlers.ConfirmPhoneVerification)
+
 	// Milestone Routes
 	milestoneHandler := handlers.NewMilestoneHandler(db.DB) // Assuming db.DB is the sqlx.DB instance
 	api.GET("/milestones", milestoneHandler.GetMilestones)

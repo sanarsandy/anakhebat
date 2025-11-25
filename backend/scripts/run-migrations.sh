@@ -28,8 +28,16 @@ DB_USER=${DB_USER:-tukem_user}
 DB_NAME=${DB_NAME:-tukem_db}
 DB_PASSWORD=${DB_PASSWORD:-tukem_password}
 
-# Docker container name (adjust as needed)
-DB_CONTAINER=${DB_CONTAINER:-tukem-db}
+# Docker container name (auto-detect or use environment variable)
+if [ -z "$DB_CONTAINER" ]; then
+    # Try to find postgres container automatically
+    DB_CONTAINER=$(docker ps --format "{{.Names}}" | grep -E "postgres|tukem.*db" | head -1)
+    if [ -z "$DB_CONTAINER" ]; then
+        # Fallback to default
+        DB_CONTAINER="tukem-db"
+    fi
+fi
+echo "Using Docker container: $DB_CONTAINER"
 
 # Detect if we should use Docker
 USE_DOCKER=false

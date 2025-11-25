@@ -34,6 +34,10 @@ services:
       GOOGLE_REDIRECT_URL: ${GOOGLE_REDIRECT_URL:-http://localhost:8080/api/auth/google/callback}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
       JWT_SECRET: ${JWT_SECRET:-secret}
+      # WhatsApp Gateway (from .env file)
+      WHATSAPP_GATEWAY_URL: ${WHATSAPP_GATEWAY_URL:-https://anakhebat.web.id/services/wa-gateway/api/send-file}
+      WHATSAPP_API_KEY: ${WHATSAPP_API_KEY}
+      WHATSAPP_SENDER_NUMBER: ${WHATSAPP_SENDER_NUMBER:-}
     depends_on:
       - db
     networks:

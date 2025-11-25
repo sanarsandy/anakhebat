@@ -198,11 +198,15 @@ func findOrCreateGoogleUser(googleUser *GoogleUserInfo) (*models.User, error) {
 	var authProvider sql.NullString
 	
 	// Try to find user by Google ID
-	query := `SELECT id, email, password_hash, full_name, role, google_id, auth_provider, created_at 
+	var phoneNumber sql.NullString
+	var phoneVerified sql.NullBool
+	var phoneVerifiedAt sql.NullTime
+	query := `SELECT id, email, password_hash, full_name, role, google_id, auth_provider, 
+	          phone_number, phone_verified, phone_verified_at, created_at 
 	          FROM users WHERE google_id = $1`
 	err := db.DB.QueryRow(query, googleUser.ID).Scan(
 		&user.ID, &user.Email, &passwordHash, &user.FullName, 
-		&user.Role, &googleID, &authProvider, &user.CreatedAt)
+		&user.Role, &googleID, &authProvider, &phoneNumber, &phoneVerified, &phoneVerifiedAt, &user.CreatedAt)
 	
 	if err == nil {
 		// User found, set optional fields
@@ -217,6 +221,15 @@ func findOrCreateGoogleUser(googleUser *GoogleUserInfo) (*models.User, error) {
 		} else {
 			user.AuthProvider = "google"
 		}
+		if phoneNumber.Valid {
+			user.PhoneNumber = &phoneNumber.String
+		}
+		if phoneVerified.Valid {
+			user.PhoneVerified = phoneVerified.Bool
+		}
+		if phoneVerifiedAt.Valid {
+			user.PhoneVerifiedAt = &phoneVerifiedAt.Time
+		}
 		return &user, nil
 	}
 	
@@ -226,11 +239,12 @@ func findOrCreateGoogleUser(googleUser *GoogleUserInfo) (*models.User, error) {
 	}
 	
 	// User not found, try to find by email
-	query = `SELECT id, email, password_hash, full_name, role, google_id, auth_provider, created_at 
+	query = `SELECT id, email, password_hash, full_name, role, google_id, auth_provider, 
+	         phone_number, phone_verified, phone_verified_at, created_at 
 	         FROM users WHERE email = $1`
 	err = db.DB.QueryRow(query, googleUser.Email).Scan(
 		&user.ID, &user.Email, &passwordHash, &user.FullName, 
-		&user.Role, &googleID, &authProvider, &user.CreatedAt)
+		&user.Role, &googleID, &authProvider, &phoneNumber, &phoneVerified, &phoneVerifiedAt, &user.CreatedAt)
 	
 	if err == nil {
 		// User exists with email
@@ -244,6 +258,15 @@ func findOrCreateGoogleUser(googleUser *GoogleUserInfo) (*models.User, error) {
 				}
 				user.GoogleID = &googleID.String
 				user.AuthProvider = "google"
+				if phoneNumber.Valid {
+					user.PhoneNumber = &phoneNumber.String
+				}
+				if phoneVerified.Valid {
+					user.PhoneVerified = phoneVerified.Bool
+				}
+				if phoneVerifiedAt.Valid {
+					user.PhoneVerifiedAt = &phoneVerifiedAt.Time
+				}
 				return &user, nil
 			}
 			// Different Google ID but same email - this shouldn't happen, but handle it

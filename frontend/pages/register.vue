@@ -3,37 +3,62 @@
     <div class="max-w-md w-full space-y-8">
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Create your account
+          Daftar Akun Baru
         </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+          Daftar menggunakan nomor WhatsApp Anda
+        </p>
       </div>
       <form class="mt-8 space-y-6" @submit.prevent="handleRegister">
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
-            <label for="full-name" class="sr-only">Full Name</label>
-            <input id="full-name" name="full_name" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Full Name" v-model="fullName" />
+            <label for="full-name" class="sr-only">Nama Lengkap</label>
+            <input 
+              id="full-name" 
+              name="full_name" 
+              type="text" 
+              required 
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
+              placeholder="Nama Lengkap" 
+              v-model="fullName" 
+            />
           </div>
           <div>
-            <label for="email-address" class="sr-only">Email address</label>
-            <input id="email-address" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email address" v-model="email" />
-          </div>
-          <div>
-            <label for="password" class="sr-only">Password</label>
-            <input id="password" name="password" type="password" autocomplete="new-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password" v-model="password" />
+            <label for="phone-number" class="sr-only">Nomor WhatsApp</label>
+            <input 
+              id="phone-number" 
+              name="phone_number" 
+              type="tel" 
+              autocomplete="tel" 
+              required 
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
+              placeholder="Nomor WhatsApp (contoh: 081234567890 atau +6281234567890)" 
+              v-model="phoneNumber" 
+            />
           </div>
         </div>
 
-        <div v-if="error" class="text-red-500 text-sm text-center">
+        <div v-if="error" class="text-red-500 text-sm text-center bg-red-50 p-3 rounded-md border border-red-200">
           {{ error }}
         </div>
 
+        <div v-if="success" class="text-green-600 text-sm text-center bg-green-50 p-3 rounded-md border border-green-200">
+          {{ success }}
+        </div>
+
         <div>
-          <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Register
+          <button 
+            type="submit" 
+            :disabled="loading"
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span v-if="loading">Mendaftarkan...</span>
+            <span v-else>Daftar</span>
           </button>
         </div>
         <div class="text-center">
           <NuxtLink to="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
-            Already have an account? Sign in
+            Sudah punya akun? Masuk di sini
           </NuxtLink>
         </div>
       </form>
@@ -41,56 +66,48 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   layout: false
 })
 
 const fullName = ref('')
-const email = ref('')
-const password = ref('')
+const phoneNumber = ref('')
 const error = ref('')
+const success = ref('')
 const loading = ref(false)
-const authStore = useAuthStore()
 const config = useRuntimeConfig()
 const router = useRouter()
 
 const handleRegister = async () => {
   error.value = ''
+  success.value = ''
   loading.value = true
   
   try {
-    // Register user
+    // Register user with phone number
     const registerData = await $fetch(`${config.public.apiBase}/api/auth/register`, {
       method: 'POST',
       body: {
         full_name: fullName.value,
-        email: email.value,
-        password: password.value
+        phone_number: phoneNumber.value
       }
     })
 
     console.log('Register success:', registerData)
 
-    // Auto login after successful registration
-    const loginData = await $fetch(`${config.public.apiBase}/api/auth/login`, {
-      method: 'POST',
-      body: {
-        email: email.value,
-        password: password.value
-      }
-    })
-
-    console.log('Login success:', loginData)
-
-    if (loginData.token) {
-      authStore.setToken(loginData.token)
-      authStore.setUser(loginData.user)
-      router.push('/dashboard')
-    }
+    // Show success message and redirect to login
+    success.value = 'Pendaftaran berhasil! Silakan login dengan nomor WhatsApp Anda.'
+    
+    // Redirect to login page after 2 seconds
+    setTimeout(() => {
+      router.push('/login')
+    }, 2000)
   } catch (e) {
     console.error('Registration error:', e)
-    error.value = e.data?.error || e.message || 'Registration failed'
+    const err: any = e || {}
+    const errorMsg = (err.data && err.data.error) || err.message || 'Pendaftaran gagal'
+    error.value = errorMsg
   } finally {
     loading.value = false
   }

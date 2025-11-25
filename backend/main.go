@@ -88,6 +88,11 @@ func EchoServer() *echo.Echo {
 	auth := e.Group("/api/auth")
 	auth.POST("/register", handlers.Register)
 	auth.POST("/login", handlers.Login)
+	// OTP Authentication Routes
+	auth.POST("/request-otp", handlers.RequestOTP)
+	auth.POST("/verify-otp", handlers.VerifyOTP)
+	auth.POST("/resend-otp", handlers.ResendOTP)
+	// Google OAuth Routes
 	auth.GET("/google", handlers.GetGoogleAuthURL)
 	auth.GET("/google/callback", handlers.GoogleAuthCallback)
 

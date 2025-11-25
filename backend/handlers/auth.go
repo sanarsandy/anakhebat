@@ -7,6 +7,7 @@ import (
 	"time"
 	"tukem-backend/db"
 	"tukem-backend/models"
+	"tukem-backend/utils"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
@@ -19,23 +20,45 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request"})
 	}
 
-	// Hash password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	// Validate and normalize phone number
+	phoneNumber, err := utils.ValidatePhoneNumber(req.PhoneNumber)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to hash password"})
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	// Insert into DB
-	query := `INSERT INTO users (email, password_hash, full_name, role, auth_provider) VALUES ($1, $2, $3, 'parent', 'email') RETURNING id, created_at`
-	var user models.User
-	user.Email = req.Email
-	user.FullName = req.FullName
-	user.Role = "parent"
-	user.AuthProvider = "email"
+	// Check if phone number already exists
+	var existingID string
+	checkQuery := `SELECT id FROM users WHERE phone_number = $1`
+	err = db.DB.QueryRow(checkQuery, phoneNumber).Scan(&existingID)
+	if err == nil {
+		// Phone number already registered
+		return c.JSON(http.StatusConflict, map[string]string{"error": "Nomor WhatsApp sudah terdaftar"})
+	} else if err != sql.ErrNoRows {
+		// Database error
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Database error: " + err.Error()})
+	}
 
-	err = db.DB.QueryRow(query, req.Email, string(hashedPassword), req.FullName).Scan(&user.ID, &user.CreatedAt)
+	// Insert into DB - phone number only, no password
+	query := `INSERT INTO users (phone_number, full_name, role, auth_provider, phone_verified) 
+	          VALUES ($1, $2, 'parent', 'phone', false) 
+	          RETURNING id, phone_number, full_name, role, auth_provider, created_at`
+	var user models.User
+	var phoneNum sql.NullString
+	var authProvider sql.NullString
+	
+	err = db.DB.QueryRow(query, phoneNumber, req.FullName).Scan(
+		&user.ID, &phoneNum, &user.FullName, &user.Role, &authProvider, &user.CreatedAt)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create user: " + err.Error()})
+	}
+
+	if phoneNum.Valid {
+		user.PhoneNumber = &phoneNum.String
+	}
+	if authProvider.Valid {
+		user.AuthProvider = authProvider.String
+	} else {
+		user.AuthProvider = "phone"
 	}
 
 	return c.JSON(http.StatusCreated, user)

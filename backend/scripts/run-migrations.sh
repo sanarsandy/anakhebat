@@ -13,8 +13,10 @@ MIGRATIONS=(
     "004_milestones_tables.sql"
     "005_who_standards.sql"
     "006_add_denver_domain.sql"
+    "007_add_google_oauth.sql"
     "007_stimulation_content.sql"
     "008_immunization_tables.sql"
+    "009_add_phone_otp_auth.sql"
 )
 
 # Database connection (adjust as needed)

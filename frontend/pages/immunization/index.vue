@@ -15,7 +15,7 @@
     <div v-else class="space-y-6">
       <!-- Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-indigo-500">
+        <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-jurnal-teal-500">
           <p class="text-gray-500 text-xs font-medium uppercase mb-1">Total</p>
           <p class="text-2xl font-bold text-gray-900">{{ immunizationStore.summary?.total || 0 }}</p>
         </div>
@@ -39,7 +39,7 @@
 
       <!-- Loading State -->
       <div v-if="immunizationStore.loading" class="bg-white rounded-xl shadow-sm p-12 text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-jurnal-teal-600 mx-auto"></div>
         <p class="text-gray-600 mt-4">Memuat jadwal imunisasi...</p>
       </div>
 
@@ -54,7 +54,7 @@
               @click="activeTab = tab.key"
               class="px-4 py-2 rounded-lg text-sm font-medium transition"
               :class="activeTab === tab.key 
-                ? 'bg-indigo-600 text-white' 
+                ? 'bg-jurnal-teal-600 text-white' 
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
             >
               {{ tab.label }} ({{ tab.count }})
@@ -126,7 +126,7 @@
               <button
                 v-if="immunization.status !== 'completed'"
                 @click="openRecordModal(immunization)"
-                class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition"
+                class="px-4 py-2 bg-jurnal-teal-600 text-white text-sm font-semibold rounded-lg hover:bg-jurnal-teal-700 transition"
               >
                 Tandai Sudah
               </button>
@@ -161,7 +161,7 @@
                 v-model="recordForm.given_date"
                 type="date"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               />
             </div>
             
@@ -171,7 +171,7 @@
                 v-model="recordForm.location"
                 type="text"
                 placeholder="Contoh: RS. Contoh, Puskesmas..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               />
             </div>
             
@@ -181,7 +181,7 @@
                 v-model="recordForm.healthcare_facility"
                 type="text"
                 placeholder="Nama rumah sakit/puskesmas"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               />
             </div>
             
@@ -191,7 +191,7 @@
                 v-model="recordForm.doctor_name"
                 type="text"
                 placeholder="Nama dokter yang memberikan"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               />
             </div>
             
@@ -201,7 +201,7 @@
                 v-model="recordForm.vaccine_batch_number"
                 type="text"
                 placeholder="Nomor batch vaksin (opsional)"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               />
             </div>
             
@@ -211,7 +211,7 @@
                 v-model="recordForm.notes"
                 rows="3"
                 placeholder="Catatan tambahan (opsional)"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               ></textarea>
             </div>
           </div>
@@ -227,7 +227,7 @@
             <button
               type="submit"
               :disabled="immunizationStore.loading"
-              class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+              class="flex-1 px-4 py-2 bg-jurnal-teal-600 text-white rounded-lg hover:bg-jurnal-teal-700 transition disabled:opacity-50"
             >
               Simpan
             </button>

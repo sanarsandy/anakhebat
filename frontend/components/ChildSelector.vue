@@ -2,7 +2,7 @@
   <div ref="dropdownRef" class="relative">
     <button 
       @click="isOpen = !isOpen"
-      class="flex items-center gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 border border-gray-200/50"
+      class="flex items-center gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-jurnal-teal-500 focus:ring-offset-2 border border-gray-200/50"
     >
       <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -43,13 +43,13 @@
             :key="child.id"
             @click="selectChild(child)"
             class="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors group"
-            :class="childStore.selectedChild?.id === child.id ? 'bg-indigo-50 border-l-2 border-indigo-500' : ''"
+            :class="childStore.selectedChild?.id === child.id ? 'bg-jurnal-teal-50 border-l-2 border-jurnal-teal-500' : ''"
           >
             <div class="flex items-center justify-between mb-1">
-              <span class="font-medium text-gray-900" :class="childStore.selectedChild?.id === child.id ? 'text-indigo-600' : ''">
+              <span class="font-medium text-gray-900" :class="childStore.selectedChild?.id === child.id ? 'text-jurnal-teal-600' : ''">
                 {{ child.name }}
               </span>
-              <svg v-if="childStore.selectedChild?.id === child.id" class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+              <svg v-if="childStore.selectedChild?.id === child.id" class="w-4 h-4 text-jurnal-teal-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
               </svg>
             </div>
@@ -64,11 +64,11 @@
         <div class="border-t border-gray-100 mt-1 pt-1.5">
           <NuxtLink 
             to="/children/add" 
-            class="flex items-center gap-3 px-4 py-2.5 text-sm text-indigo-600 hover:bg-indigo-50 transition-colors group/item"
+            class="flex items-center gap-3 px-4 py-2.5 text-sm text-jurnal-teal-600 hover:bg-jurnal-teal-50 transition-colors group/item"
             @click="isOpen = false"
           >
-            <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center group-hover/item:bg-indigo-100 transition-colors">
-              <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-8 h-8 rounded-lg bg-jurnal-teal-50 flex items-center justify-center group-hover/item:bg-jurnal-teal-100 transition-colors">
+              <svg class="w-4 h-4 text-jurnal-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
             </div>

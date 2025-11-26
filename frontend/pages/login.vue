@@ -1,11 +1,20 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen flex items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <!-- Logo -->
+        <div class="flex justify-center mb-6">
+          <img 
+            v-if="logoUrl"
+            :src="logoUrl" 
+            alt="Jurnal Si Kecil" 
+            class="h-16 w-auto object-contain"
+          />
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-bold text-jurnal-charcoal-800">
           Masuk ke Akun Anda
         </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
+        <p class="mt-2 text-center text-sm text-jurnal-charcoal-600">
           Pilih metode login yang Anda inginkan
         </p>
       </div>
@@ -14,12 +23,12 @@
       <div class="mt-8 space-y-4">
         <!-- WhatsApp OTP Login -->
         <div v-if="loginMethod === 'whatsapp' || loginMethod === null" class="space-y-4">
-          <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+          <div class="bg-white p-6 rounded-soft shadow-md border border-gray-200">
             <div class="flex items-center justify-center mb-4">
               <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
               </svg>
-              <h3 class="ml-2 text-lg font-semibold text-gray-900">Login dengan WhatsApp</h3>
+              <h3 class="ml-2 text-lg font-semibold text-jurnal-charcoal-800">Login dengan WhatsApp</h3>
             </div>
 
             <!-- Step 1: Request OTP -->
@@ -34,14 +43,14 @@
                   type="tel" 
                   placeholder="+6281234567890" 
                   required 
-                  class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
+                  class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-soft focus:outline-none focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500 focus:z-10 sm:text-sm" 
                 />
                 <p class="mt-1 text-xs text-gray-500">Format: +62xxxxxxxxxxx</p>
               </div>
 
               <!-- Error Message -->
               <div v-if="error" class="text-red-500 text-sm">
-                <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                <div class="bg-red-50 border border-red-200 rounded-soft p-3">
                   <p class="font-medium">{{ error }}</p>
                 </div>
               </div>
@@ -49,7 +58,7 @@
               <button 
                 @click="handleRequestOTP" 
                 :disabled="loading || !phoneNumber"
-                class="w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent text-sm font-medium rounded-soft text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span v-if="loading">Mengirim OTP...</span>
                 <span v-else>Kirim OTP via WhatsApp</span>
@@ -72,7 +81,7 @@
                   maxlength="6" 
                   placeholder="123456" 
                   required 
-                  class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm text-center text-2xl tracking-widest" 
+                  class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-soft focus:outline-none focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500 focus:z-10 sm:text-sm text-center text-2xl tracking-widest" 
                   @input="handleOTPInput"
                 />
                 <p class="mt-1 text-xs text-gray-500">
@@ -89,7 +98,7 @@
                 <button 
                   @click="handleVerifyOTP" 
                   :disabled="loading || otpCode.length !== 6"
-                  class="flex-1 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="flex-1 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-soft text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span v-if="loading">Memverifikasi...</span>
                   <span v-else>Verifikasi OTP</span>
@@ -97,7 +106,7 @@
                 <button 
                   @click="handleResendOTP" 
                   :disabled="loading || resendCooldown > 0"
-                  class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-soft text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-jurnal-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span v-if="resendCooldown > 0">{{ resendCooldown }}s</span>
                   <span v-else>Kirim Ulang</span>
@@ -130,7 +139,7 @@
             type="button"
             @click="handleGoogleLogin"
             :disabled="loading"
-            class="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-soft shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-jurnal-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg class="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -142,7 +151,7 @@
           </button>
           
           <!-- Error message for Google login -->
-          <div v-if="error && loginMethod === 'google'" class="text-red-500 text-sm text-center bg-red-50 p-3 rounded-md border border-red-200">
+          <div v-if="error && loginMethod === 'google'" class="text-red-500 text-sm text-center bg-red-50 p-3 rounded-soft border border-red-200">
             {{ error }}
           </div>
         </div>
@@ -151,7 +160,7 @@
         <div class="text-center mt-6">
           <p class="text-sm text-gray-600">
             Belum punya akun?
-            <NuxtLink to="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+            <NuxtLink to="/register" class="font-medium text-jurnal-teal-600 hover:text-jurnal-teal-500">
               Daftar di sini
             </NuxtLink>
           </p>
@@ -162,11 +171,19 @@
 </template>
 
 <script setup lang="ts">
+import logoImage from '~/assets/images/logo.png'
+
 definePageMeta({
   layout: false
 })
 
+const logoUrl = ref(null)
 const phoneNumber = ref('')
+
+onMounted(() => {
+  // Set logo URL only on client to avoid hydration mismatch
+  logoUrl.value = logoImage
+})
 const otpCode = ref('')
 const otpStep = ref('request') // 'request' or 'verify'
 const error = ref('')
@@ -291,7 +308,6 @@ const handleVerifyOTP = async () => {
       // Show welcome message for new users
       if (data.is_new_user) {
         // You can show a welcome message here
-        console.log('New user registered:', data.user)
       }
 
       // Navigate to dashboard
@@ -350,11 +366,8 @@ const handleGoogleLogin = async () => {
       method: 'GET'
     })
 
-    console.log('Google OAuth response:', response)
-
     if (response && response.auth_url) {
       // Redirect immediately to Google OAuth - don't wait
-      console.log('Redirecting to Google OAuth:', response.auth_url)
       // Use window.location.replace to avoid back button issues
       window.location.replace(response.auth_url)
       // Don't set loading to false here - we're redirecting

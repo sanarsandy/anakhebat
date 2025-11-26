@@ -7,7 +7,7 @@
 
     <!-- Loading State -->
     <div v-if="loading && !profile" class="bg-white rounded-xl shadow-sm p-8 text-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-jurnal-teal-600 mx-auto"></div>
       <p class="mt-4 text-gray-600">Memuat profil...</p>
     </div>
 
@@ -17,8 +17,8 @@
       <div class="bg-white rounded-xl shadow-sm p-8">
         <div class="flex items-center space-x-6 mb-6">
           <!-- Avatar -->
-          <div class="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center">
-            <span class="text-3xl font-bold text-indigo-600">
+          <div class="w-20 h-20 rounded-full bg-jurnal-teal-100 flex items-center justify-center">
+            <span class="text-3xl font-bold text-jurnal-teal-600">
               {{ getInitials(profile?.user?.full_name || '') }}
             </span>
           </div>
@@ -102,7 +102,7 @@
               type="text"
               required
               minlength="3"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               placeholder="Masukkan nama lengkap"
             />
           </div>
@@ -116,7 +116,7 @@
               id="email"
               v-model="form.email"
               type="email"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               placeholder="email@example.com"
             />
             <p class="mt-1 text-xs text-gray-500">Email opsional, digunakan untuk notifikasi</p>
@@ -132,7 +132,7 @@
                 id="phone-number"
                 v-model="form.phoneNumber"
                 type="tel"
-                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
                 placeholder="+6281234567890"
                 :disabled="phoneVerificationStep !== 'none'"
               />
@@ -160,7 +160,7 @@
                 v-else-if="!profile?.user?.phone_number"
                 type="button"
                 @click="startPhoneVerification"
-                class="px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition whitespace-nowrap"
+                class="px-4 py-3 bg-jurnal-teal-600 text-white rounded-lg hover:bg-jurnal-teal-700 transition whitespace-nowrap"
               >
                 Tambah Nomor
               </button>
@@ -240,7 +240,7 @@
             <button
               type="submit"
               :disabled="loading || !hasChanges"
-              class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              class="px-6 py-2 bg-jurnal-teal-600 text-white rounded-lg hover:bg-jurnal-teal-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span v-if="loading">Menyimpan...</span>
               <span v-else>Simpan Perubahan</span>

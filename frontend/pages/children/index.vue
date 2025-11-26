@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Profil Anak</h1>
         <p class="text-gray-600 mt-2">Kelola data anak Anda</p>
       </div>
-      <NuxtLink to="/children/add" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition flex items-center space-x-2">
+      <NuxtLink to="/children/add" class="px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition flex items-center space-x-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
@@ -18,7 +18,7 @@
       <div class="text-6xl mb-4">👶</div>
       <h2 class="text-2xl font-bold text-gray-900 mb-2">Belum Ada Data Anak</h2>
       <p class="text-gray-600 mb-6">Mulai dengan menambahkan profil anak Anda</p>
-      <NuxtLink to="/children/add" class="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+      <NuxtLink to="/children/add" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition">
         Tambah Anak Pertama
       </NuxtLink>
     </div>
@@ -29,14 +29,14 @@
         v-for="child in childStore.children" 
         :key="child.id"
         class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all p-6 border-2"
-        :class="childStore.selectedChild?.id === child.id ? 'border-indigo-500' : 'border-gray-200'"
+        :class="childStore.selectedChild?.id === child.id ? 'border-jurnal-teal-500' : 'border-gray-200'"
       >
         <div class="flex items-start justify-between mb-4">
           <div class="text-5xl">{{ child.gender === 'male' ? '👦' : '👧' }}</div>
           <button 
             @click="selectChild(child.id)"
             class="px-3 py-1 text-sm rounded-lg transition"
-            :class="childStore.selectedChild?.id === child.id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+            :class="childStore.selectedChild?.id === child.id ? 'bg-jurnal-teal-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
           >
             {{ childStore.selectedChild?.id === child.id ? 'Terpilih' : 'Pilih' }}
           </button>

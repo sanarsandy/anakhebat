@@ -153,12 +153,6 @@ export const useMilestoneStore = defineStore('milestone', {
                 const apiBase = useApiUrl()
                 const authStore = useAuthStore()
 
-                console.log('Syncing assessments:', {
-                    childId,
-                    assessmentDate,
-                    itemCount: drafts.length
-                })
-
                 const response = await $fetch(`${apiBase}/api/children/${childId}/assessments/batch`, {
                     method: 'PUT',
                     headers: { 
@@ -170,8 +164,6 @@ export const useMilestoneStore = defineStore('milestone', {
                         items: drafts
                     }
                 })
-
-                console.log('Assessment sync response:', response)
 
                 // Clear drafts after successful sync
                 delete this.draftAssessments[childId]

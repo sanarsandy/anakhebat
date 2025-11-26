@@ -2,13 +2,13 @@
   <div class="p-6 max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-8">
       <h1 class="text-2xl font-bold text-gray-900">Riwayat Perkembangan</h1>
-      <NuxtLink to="/development" class="text-indigo-600 hover:text-indigo-800 font-medium">
+      <NuxtLink to="/development" class="text-jurnal-teal-600 hover:text-jurnal-teal-800 font-medium">
         &larr; Kembali ke Dashboard
       </NuxtLink>
     </div>
 
     <div v-if="loading" class="text-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-jurnal-teal-600 mx-auto"></div>
       <p class="mt-4 text-gray-500">Memuat riwayat...</p>
     </div>
 
@@ -16,7 +16,7 @@
       <div class="text-6xl mb-4">📅</div>
       <h3 class="text-xl font-bold text-gray-900 mb-2">Belum Ada Riwayat</h3>
       <p class="text-gray-600 mb-6">Belum ada penilaian perkembangan yang tercatat untuk anak ini.</p>
-      <NuxtLink to="/development/assess" class="inline-block px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700">
+      <NuxtLink to="/development/assess" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-bold rounded-lg hover:bg-jurnal-teal-700">
         Mulai Penilaian Sekarang
       </NuxtLink>
     </div>
@@ -42,7 +42,7 @@
                 <span class="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-600 capitalize">
                   {{ item.milestone?.category || item['milestone.category'] || 'N/A' }}
                 </span>
-                <span v-if="item.milestone?.pyramid_level || item['milestone.pyramid_level']" class="text-xs px-2 py-0.5 rounded bg-indigo-50 text-indigo-600">
+                <span v-if="item.milestone?.pyramid_level || item['milestone.pyramid_level']" class="text-xs px-2 py-0.5 rounded bg-jurnal-teal-50 text-jurnal-teal-600">
                   Level {{ item.milestone?.pyramid_level || item['milestone.pyramid_level'] }}
                 </span>
                 <span v-if="item.milestone?.denver_domain || item['milestone.denver_domain']" class="text-xs px-2 py-0.5 rounded bg-purple-50 text-purple-600">

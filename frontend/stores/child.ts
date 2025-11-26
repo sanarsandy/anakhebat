@@ -41,11 +41,9 @@ export const useChildStore = defineStore('child', {
                             if (savedChild) {
                                 // Valid child found, restore it
                                 this.selectedChild = savedChild
-                                console.log('Restored selected child from localStorage:', savedChildId)
                                 return // Exit early if we found and restored the saved child
                             } else {
                                 // Saved child ID doesn't belong to current user, clear it
-                                console.log('Clearing invalid selectedChildId from localStorage:', savedChildId)
                                 localStorage.removeItem('selectedChildId')
                             }
                         }
@@ -56,14 +54,12 @@ export const useChildStore = defineStore('child', {
                         this.selectedChild = this.children[0]
                         if (process.client) {
                             localStorage.setItem('selectedChildId', this.children[0].id)
-                            console.log('Auto-selected first child:', this.children[0].id)
                         }
                     } else if (this.children.length === 0) {
                         // No children, clear selection
                         this.selectedChild = null
                         if (process.client) {
                             localStorage.removeItem('selectedChildId')
-                            console.log('No children found, cleared selection')
                         }
                     }
                 } else {
@@ -100,8 +96,6 @@ export const useChildStore = defineStore('child', {
             const apiBase = useApiUrl()
 
             try {
-                console.log('Adding child with data:', childData)
-
                 const data = await $fetch(`${apiBase}/api/children`, {
                     method: 'POST',
                     headers: {
@@ -111,7 +105,6 @@ export const useChildStore = defineStore('child', {
                     body: childData
                 })
 
-                console.log('Child added successfully:', data)
                 await this.fetchChildren()
                 return { success: true, data }
             } catch (e) {
@@ -181,7 +174,6 @@ export const useChildStore = defineStore('child', {
             this.selectedChild = null
             if (process.client) {
                 localStorage.removeItem('selectedChildId')
-                console.log('Child store state cleared')
             }
         }
     },

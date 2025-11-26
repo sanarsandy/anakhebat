@@ -18,7 +18,7 @@
         <h2 class="text-xl font-bold text-gray-900 mb-6 text-center">Status Piramida Belajar</h2>
         
         <div v-if="milestoneStore.loading" class="h-64 flex items-center justify-center">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-jurnal-teal-600"></div>
         </div>
         
         <div v-else>
@@ -60,17 +60,17 @@
 
       <!-- Actions -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <NuxtLink to="/development/assess" class="block p-6 bg-indigo-600 rounded-xl text-white hover:bg-indigo-700 transition shadow-lg transform hover:-translate-y-1">
+        <NuxtLink to="/development/assess" class="block p-6 bg-jurnal-teal-600 rounded-xl text-white hover:bg-jurnal-teal-700 transition shadow-lg transform hover:-translate-y-1">
           <div class="flex items-center justify-between">
             <div>
               <h3 class="text-xl font-bold mb-2">Penilaian KPSP</h3>
-              <p class="text-indigo-100 text-sm">Checklist berdasarkan Piramida Belajar.</p>
+              <p class="text-jurnal-teal-100 text-sm">Checklist berdasarkan Piramida Belajar.</p>
             </div>
             <Icon name="mdi:clipboard-check" class="h-12 w-12 opacity-80" />
           </div>
         </NuxtLink>
 
-        <NuxtLink to="/development/assess-denver" class="block p-6 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl text-white hover:from-purple-700 hover:to-indigo-700 transition shadow-lg transform hover:-translate-y-1">
+        <NuxtLink to="/development/assess-denver" class="block p-6 bg-gradient-to-br from-purple-600 to-jurnal-teal-600 rounded-xl text-white hover:from-purple-700 hover:to-jurnal-teal-700 transition shadow-lg transform hover:-translate-y-1">
           <div class="flex items-center justify-between">
             <div>
               <h3 class="text-xl font-bold mb-2">Penilaian Denver II</h3>
@@ -80,7 +80,7 @@
           </div>
         </NuxtLink>
 
-        <NuxtLink to="/development/history" class="block p-6 bg-white border border-gray-200 rounded-xl hover:border-indigo-300 transition hover:shadow-md">
+        <NuxtLink to="/development/history" class="block p-6 bg-white border border-gray-200 rounded-xl hover:border-jurnal-teal-300 transition hover:shadow-md">
           <div class="flex items-center justify-between">
             <div>
               <h3 class="text-xl font-bold text-gray-900 mb-2">Riwayat Penilaian</h3>
@@ -104,7 +104,7 @@
       <!-- Rekomendasi Stimulasi Section -->
       <div v-if="recommendationStore.loading" class="bg-white rounded-xl shadow-sm p-6">
         <div class="flex items-center justify-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-jurnal-teal-600"></div>
           <span class="ml-3 text-gray-600">Memuat rekomendasi...</span>
         </div>
       </div>
@@ -209,7 +209,4 @@ onUnmounted(() => {
     stopWatcher()
   }
 })
-
-// Force update for HMR
-console.log('Development page loaded')
 </script>

@@ -15,14 +15,14 @@
       <div class="text-5xl mb-4">⚠️</div>
       <h2 class="text-xl font-bold text-gray-900 mb-2">Pilih Anak Terlebih Dahulu</h2>
       <p class="text-gray-600 mb-4">Silakan pilih anak dari dropdown di header untuk melihat grafik pertumbuhan</p>
-      <NuxtLink to="/children" class="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+      <NuxtLink to="/children" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition">
         Kelola Profil Anak
       </NuxtLink>
     </div>
 
     <!-- Loading State -->
     <div v-if="loading" class="bg-white rounded-xl shadow-sm p-12 text-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-jurnal-teal-600 mx-auto mb-4"></div>
       <p class="text-gray-600">Memuat data grafik...</p>
     </div>
 
@@ -38,7 +38,7 @@
             :class="[
               'px-6 py-3 font-medium text-sm transition-colors',
               activeTab === tab.id
-                ? 'text-indigo-600 border-b-2 border-indigo-600'
+                ? 'text-jurnal-teal-600 border-b-2 border-jurnal-teal-600'
                 : 'text-gray-500 hover:text-gray-700'
             ]"
           >
@@ -87,7 +87,7 @@
         </div>
         <div class="mt-4 pt-4 border-t border-gray-200">
           <div class="flex items-center space-x-2">
-            <div class="w-4 h-4 border-2 border-indigo-600 bg-indigo-50"></div>
+            <div class="w-4 h-4 border-2 border-jurnal-teal-600 bg-jurnal-teal-50"></div>
             <span class="text-sm font-medium text-gray-900">Data Pengukuran Anak</span>
           </div>
         </div>
@@ -204,8 +204,6 @@ const createChart = (canvasRef, chartType, indicator, label, yAxisLabel) => {
       return
     }
     
-    // Log standards data for debugging
-    console.log(`WHO standards for ${indicator} (${gender}):`, standards.slice(0, 3))
     
     // Filter out standards with zero SD values (shouldn't happen, but just in case)
     const validStandards = standards.filter(s => s.sd0 > 0)
@@ -352,8 +350,6 @@ const createChart = (canvasRef, chartType, indicator, label, yAxisLabel) => {
       
       if (chartType === 'wfa') wfaChart = chart
       if (chartType === 'hfa') hfaChart = chart
-      
-      console.log(`Chart created successfully for ${chartType}`)
     } catch (error) {
       console.error(`Error creating chart for ${chartType}:`, error)
     }

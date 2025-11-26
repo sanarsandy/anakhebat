@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Pertumbuhan</h1>
         <p class="text-gray-600 mt-2">Pantau pertumbuhan fisik anak Anda</p>
       </div>
-      <NuxtLink to="/growth/add" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition flex items-center space-x-2">
+      <NuxtLink to="/growth/add" class="px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition flex items-center space-x-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
@@ -18,14 +18,14 @@
       <div class="text-5xl mb-4">⚠️</div>
       <h2 class="text-xl font-bold text-gray-900 mb-2">Pilih Anak Terlebih Dahulu</h2>
       <p class="text-gray-600 mb-4">Silakan pilih anak dari dropdown di header untuk melihat data pertumbuhan</p>
-      <NuxtLink to="/children" class="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+      <NuxtLink to="/children" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition">
         Kelola Profil Anak
       </NuxtLink>
     </div>
 
     <!-- Loading State -->
     <div v-if="measurementStore.loading" class="bg-white rounded-xl shadow-sm p-12 text-center mb-8">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-jurnal-teal-600 mx-auto mb-4"></div>
       <p class="text-gray-600">Memuat data pengukuran...</p>
     </div>
 
@@ -68,7 +68,7 @@
       <div class="text-6xl mb-4">📊</div>
       <h2 class="text-2xl font-bold text-gray-900 mb-2">Belum Ada Data Pengukuran</h2>
       <p class="text-gray-600 mb-6">Mulai pantau pertumbuhan anak dengan menambahkan pengukuran pertama</p>
-      <NuxtLink to="/growth/add" class="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+      <NuxtLink to="/growth/add" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition">
         Tambah Pengukuran Pertama
       </NuxtLink>
     </div>
@@ -77,7 +77,7 @@
     <div v-if="childStore.selectedChild && !measurementStore.loading && (measurementStore.hasMeasurements || measurementStore.measurements.length > 0)" class="space-y-6">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold text-gray-900">Riwayat Pengukuran ({{ measurementStore.measurements.length }})</h2>
-        <NuxtLink to="/growth/charts" class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center space-x-1">
+        <NuxtLink to="/growth/charts" class="text-jurnal-teal-600 hover:text-jurnal-teal-700 font-medium flex items-center space-x-1">
           <span>Lihat Grafik</span>
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -149,7 +149,6 @@ const latestMeasurementUsesCorrectedAge = computed(() => {
 })
 
 const confirmDelete = (measurement) => {
-  console.log('Delete button clicked for measurement:', measurement)
   if (!measurement || !measurement.id) {
     console.error('Invalid measurement data:', measurement)
     return
@@ -173,8 +172,6 @@ const deleteMeasurement = async () => {
     if (result.success) {
       showDeleteModal.value = false
       measurementToDelete.value = null
-      // Show success message
-      console.log('Measurement deleted successfully')
     } else {
       alert('Gagal menghapus pengukuran: ' + (result.error || 'Terjadi kesalahan'))
     }
@@ -195,9 +192,7 @@ const stopWatcher = watch(() => childStore.selectedChild, async (newChild) => {
   // Guard: Don't update if component is unmounted
   if (!isMounted.value) return
   
-  console.log('Selected child changed:', newChild)
   if (newChild) {
-    console.log('Fetching measurements for new child:', newChild.id)
     try {
       await Promise.all([
         measurementStore.fetchMeasurements(newChild.id),
@@ -206,8 +201,6 @@ const stopWatcher = watch(() => childStore.selectedChild, async (newChild) => {
       
       // Guard again after async operation
       if (!isMounted.value) return
-      
-      console.log('Measurements after fetch:', measurementStore.measurements)
     } catch (error) {
       if (isMounted.value) {
         console.error('Error fetching measurements:', error)
@@ -224,9 +217,7 @@ const stopWatcher = watch(() => childStore.selectedChild, async (newChild) => {
 onMounted(async () => {
   isMounted.value = true
   
-  console.log('Growth page mounted, selected child:', childStore.selectedChild)
   if (childStore.selectedChild) {
-    console.log('Fetching measurements for child:', childStore.selectedChild.id)
     try {
       await Promise.all([
         measurementStore.fetchMeasurements(childStore.selectedChild.id),
@@ -235,9 +226,6 @@ onMounted(async () => {
       
       // Guard: Check if still mounted after async operation
       if (!isMounted.value) return
-      
-      console.log('Measurements after fetch:', measurementStore.measurements)
-      console.log('Has measurements:', measurementStore.hasMeasurements)
     } catch (error) {
       if (isMounted.value) {
         console.error('Error fetching initial measurements:', error)

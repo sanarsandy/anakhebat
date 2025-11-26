@@ -6,12 +6,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
     const token = useCookie('token')
 
-    console.log('Auth Middleware - Path:', to.path)
-    console.log('Auth Middleware - Token (Cookie):', token.value)
-    console.log('Auth Middleware - Token (Store):', authStore.token)
-
     if (!token.value && !authStore.token && to.path !== '/login' && to.path !== '/register') {
-        console.log('Auth Middleware - Redirecting to login')
         return navigateTo('/login')
     }
 })

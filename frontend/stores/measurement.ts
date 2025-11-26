@@ -27,15 +27,11 @@ export const useMeasurementStore = defineStore('measurement', {
                 const apiBase = useApiUrl()
                 const authStore = useAuthStore()
 
-                console.log('Fetching measurements for child:', childId)
                 const data = await $fetch(`${apiBase}/api/children/${childId}/measurements`, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 })
-
-                console.log('Measurements fetched:', data)
-                console.log('Measurements count:', Array.isArray(data) ? data.length : 'not an array')
                 
                 // Ensure data is an array
                 this.measurements = Array.isArray(data) ? data : []
@@ -60,14 +56,12 @@ export const useMeasurementStore = defineStore('measurement', {
                 const apiBase = useApiUrl()
                 const authStore = useAuthStore()
 
-                console.log('Fetching latest measurement for child:', childId)
                 const data = await $fetch(`${apiBase}/api/children/${childId}/measurements/latest`, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 })
 
-                console.log('Latest measurement fetched:', data)
                 this.latestMeasurement = data
                 return { success: true, data }
             } catch (e) {
@@ -94,10 +88,6 @@ export const useMeasurementStore = defineStore('measurement', {
                 const apiBase = useApiUrl()
                 const authStore = useAuthStore()
 
-                console.log('Adding measurement for child:', childId)
-                console.log('Measurement data:', measurementData)
-                console.log('API URL:', `${apiBase}/api/children/${childId}/measurements`)
-
                 const data = await $fetch(`${apiBase}/api/children/${childId}/measurements`, {
                     method: 'POST',
                     headers: {
@@ -106,8 +96,6 @@ export const useMeasurementStore = defineStore('measurement', {
                     },
                     body: measurementData
                 })
-
-                console.log('Measurement added successfully:', data)
 
                 // Refresh measurements list
                 await this.fetchMeasurements(childId)
@@ -140,9 +128,6 @@ export const useMeasurementStore = defineStore('measurement', {
                 const apiBase = useApiUrl()
                 const authStore = useAuthStore()
 
-                console.log('Updating measurement:', measurementId, 'for child:', childId)
-                console.log('Update data:', measurementData)
-
                 const data = await $fetch(`${apiBase}/api/children/${childId}/measurements/${measurementId}`, {
                     method: 'PUT',
                     headers: {
@@ -151,8 +136,6 @@ export const useMeasurementStore = defineStore('measurement', {
                     },
                     body: measurementData
                 })
-
-                console.log('Measurement updated successfully:', data)
 
                 // Refresh measurements list and latest measurement
                 await this.fetchMeasurements(childId)
@@ -179,16 +162,12 @@ export const useMeasurementStore = defineStore('measurement', {
                 const apiBase = useApiUrl()
                 const authStore = useAuthStore()
 
-                console.log('Deleting measurement:', measurementId, 'for child:', childId)
-
                 const response = await $fetch(`${apiBase}/api/children/${childId}/measurements/${measurementId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 })
-
-                console.log('Delete response:', response)
 
                 // Refresh measurements list
                 await this.fetchMeasurements(childId)

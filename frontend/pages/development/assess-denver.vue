@@ -7,7 +7,7 @@
         <p class="text-gray-600">Usia: {{ currentAge }} Bulan</p>
       </div>
       <div class="text-sm text-gray-500">
-        <span v-if="saving" class="flex items-center text-indigo-600">
+        <span v-if="saving" class="flex items-center text-jurnal-teal-600">
           <Icon name="mdi:loading" class="animate-spin mr-1" /> Menyimpan...
         </span>
         <span v-else-if="lastSaved">Disimpan {{ lastSaved }}</span>
@@ -24,7 +24,7 @@
     </div>
 
     <div v-if="milestoneStore.loading" class="py-12 text-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-jurnal-teal-600 mx-auto"></div>
       <p class="mt-4 text-gray-500">Memuat checklist Denver II...</p>
     </div>
 
@@ -32,7 +32,7 @@
       <div class="text-6xl mb-4">📋</div>
       <h3 class="text-xl font-bold text-gray-900 mb-2">Tidak Ada Milestone</h3>
       <p class="text-gray-600 mb-6">Tidak ada milestone Denver II yang tersedia untuk usia {{ currentAge }} bulan.</p>
-      <NuxtLink to="/development" class="inline-block px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700">
+      <NuxtLink to="/development" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-bold rounded-lg hover:bg-jurnal-teal-700">
         Kembali ke Dashboard
       </NuxtLink>
     </div>
@@ -40,7 +40,7 @@
     <div v-else class="space-y-8">
       <!-- Denver II Domains -->
       <div v-for="(group, domain) in milestoneStore.milestonesByDenverDomain" :key="domain" class="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div class="px-6 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex items-center justify-between">
+        <div class="px-6 py-4 bg-gradient-to-r from-jurnal-teal-500 to-purple-600 text-white flex items-center justify-between">
           <h3 class="font-bold text-lg flex items-center">
             <span class="w-8 h-8 rounded-full bg-white bg-opacity-20 text-white flex items-center justify-center text-sm font-bold mr-3">{{ domain }}</span>
             {{ group.name }}
@@ -116,7 +116,7 @@
           <button 
             @click="saveAll" 
             :disabled="saving || draftCount === 0"
-            class="px-6 py-2.5 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md flex-1 sm:flex-none transition"
+            class="px-6 py-2.5 bg-jurnal-teal-600 text-white font-bold rounded-lg hover:bg-jurnal-teal-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md flex-1 sm:flex-none transition"
           >
             {{ saving ? 'Menyimpan...' : 'Simpan' }}
           </button>

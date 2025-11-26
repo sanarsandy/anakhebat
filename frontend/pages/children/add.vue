@@ -14,7 +14,7 @@
             v-model="form.name"
             type="text" 
             required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
             placeholder="Masukkan nama anak"
           />
         </div>
@@ -26,7 +26,7 @@
             v-model="form.dob"
             type="date" 
             required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
           />
         </div>
 
@@ -35,13 +35,13 @@
           <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin *</label>
           <div class="grid grid-cols-2 gap-4">
             <label class="flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition"
-              :class="form.gender === 'male' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300 hover:border-gray-400'">
+              :class="form.gender === 'male' ? 'border-jurnal-teal-500 bg-jurnal-teal-50' : 'border-gray-300 hover:border-gray-400'">
               <input type="radio" v-model="form.gender" value="male" class="sr-only" required />
               <span class="text-4xl mr-3">👦</span>
               <span class="font-medium">Laki-laki</span>
             </label>
             <label class="flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition"
-              :class="form.gender === 'female' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300 hover:border-gray-400'">
+              :class="form.gender === 'female' ? 'border-jurnal-teal-500 bg-jurnal-teal-50' : 'border-gray-300 hover:border-gray-400'">
               <input type="radio" v-model="form.gender" value="female" class="sr-only" required />
               <span class="text-4xl mr-3">👧</span>
               <span class="font-medium">Perempuan</span>
@@ -58,7 +58,7 @@
               type="number" 
               step="0.01"
               required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               placeholder="3.2"
             />
           </div>
@@ -69,7 +69,7 @@
               type="number" 
               step="0.1"
               required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
               placeholder="50"
             />
           </div>
@@ -81,7 +81,7 @@
             <input 
               v-model="form.is_premature"
               type="checkbox" 
-              class="mt-1 mr-3 h-5 w-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              class="mt-1 mr-3 h-5 w-5 text-jurnal-teal-600 border-gray-300 rounded focus:ring-jurnal-teal-500"
             />
             <div>
               <span class="font-medium text-gray-900">Anak Lahir Prematur</span>
@@ -122,7 +122,7 @@
           <button 
             type="submit"
             :disabled="loading"
-            class="flex-1 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+            class="flex-1 px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition disabled:opacity-50"
           >
             {{ loading ? 'Menyimpan...' : 'Simpan' }}
           </button>
@@ -158,9 +158,7 @@ const handleSubmit = async () => {
   error.value = ''
 
   try {
-    console.log('Submitting form:', form.value)
     const result = await childStore.addChild(form.value)
-    console.log('Result:', result)
     
     if (result.success) {
       router.push('/children')

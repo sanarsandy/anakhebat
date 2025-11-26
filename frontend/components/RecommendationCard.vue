@@ -49,7 +49,7 @@
           :href="recommendation.content.url" 
           target="_blank" 
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 text-xs font-semibold transition"
+          class="inline-flex items-center gap-2 text-jurnal-teal-600 hover:text-jurnal-teal-700 text-xs font-semibold transition"
         >
           <span>{{ recommendation.content.content_type === 'video' ? 'Tonton Video' : 'Baca Artikel' }}</span>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

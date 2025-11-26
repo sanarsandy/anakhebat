@@ -77,7 +77,6 @@ const props = defineProps({
 const emit = defineEmits(['delete'])
 
 const handleDelete = () => {
-  console.log('Delete button clicked in MeasurementCard:', props.measurement)
   emit('delete', props.measurement)
 }
 

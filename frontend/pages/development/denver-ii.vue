@@ -15,14 +15,14 @@
       <div class="text-5xl mb-4">⚠️</div>
       <h2 class="text-xl font-bold text-gray-900 mb-2">Pilih Anak Terlebih Dahulu</h2>
       <p class="text-gray-600 mb-4">Silakan pilih anak dari dropdown di header untuk melihat grafik Denver II</p>
-      <NuxtLink to="/children" class="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+      <NuxtLink to="/children" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition">
         Kelola Profil Anak
       </NuxtLink>
     </div>
 
     <!-- Loading State -->
     <div v-else-if="loading" class="bg-white rounded-xl shadow-sm p-12 text-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-jurnal-teal-600 mx-auto mb-4"></div>
       <p class="text-gray-600">Memuat data grafik Denver II...</p>
     </div>
 
@@ -238,7 +238,7 @@
         <div class="text-6xl mb-4">📊</div>
         <h3 class="text-xl font-bold text-gray-900 mb-2">Belum Ada Data Milestone</h3>
         <p class="text-gray-600 mb-6">Silakan isi penilaian Denver II terlebih dahulu untuk melihat grafik.</p>
-        <NuxtLink to="/development/assess-denver" class="inline-block px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700">
+        <NuxtLink to="/development/assess-denver" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-bold rounded-lg hover:bg-jurnal-teal-700">
           Mulai Penilaian Denver II
         </NuxtLink>
       </div>
@@ -403,7 +403,6 @@ onMounted(async () => {
       if (!isMounted.value) return
       
       gridData.value = data
-      console.log('Fetched Denver II grid data:', data)
     } catch (error) {
       if (isMounted.value) {
         console.error('Error loading Denver II grid:', error)

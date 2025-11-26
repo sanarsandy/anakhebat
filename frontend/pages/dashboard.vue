@@ -1,19 +1,19 @@
 <template>
-  <div class="min-h-screen bg-gray-50 pb-8">
+  <div class="min-h-screen bg-white pb-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="mb-8 pt-6">
-        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p class="text-gray-600 mt-2">Selamat datang di Tukem - Tumbuh Kembang Anak</p>
+        <h1 class="text-3xl font-bold text-jurnal-charcoal-800">Dashboard</h1>
+        <p class="text-jurnal-charcoal-600 mt-2">Selamat datang di Jurnal Si Kecil - Tumbuh Kembang Anak</p>
       </div>
 
       <!-- Phone Number Notification (for Google login users) -->
       <div 
         v-if="shouldShowPhoneNotification" 
-        class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl shadow-sm p-4 flex items-start gap-4"
+        class="mb-6 bg-gradient-to-r from-blue-50 to-jurnal-teal-50 border border-blue-200 rounded-soft-lg shadow-sm p-4 flex items-start gap-4"
       >
-        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-jurnal-teal-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-jurnal-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
           </svg>
         </div>
@@ -26,7 +26,7 @@
           </p>
           <NuxtLink 
             to="/profile" 
-            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-soft hover:bg-blue-700 transition-colors shadow-sm"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -37,11 +37,11 @@
       </div>
 
       <!-- No Child State -->
-      <div v-if="!childStore.hasChildren" class="bg-white rounded-xl shadow-sm p-12 text-center">
+      <div v-if="!childStore.hasChildren" class="bg-white rounded-soft-lg shadow-sm p-12 text-center">
         <div class="text-6xl mb-4">👶</div>
         <h2 class="text-2xl font-bold text-gray-900 mb-2">Belum Ada Data Anak</h2>
         <p class="text-gray-600 mb-6">Mulai dengan menambahkan profil anak Anda</p>
-        <NuxtLink to="/children/add" class="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+        <NuxtLink to="/children/add" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-soft hover:bg-jurnal-teal-700 transition">
           Tambah Anak Pertama
         </NuxtLink>
       </div>
@@ -49,21 +49,21 @@
       <!-- Has Children State -->
       <div v-else-if="isInitialized" class="space-y-6" :key="`dashboard-${childStore.selectedChild?.id || 'no-child'}`">
         <!-- Selected Child Info Card -->
-        <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl shadow-lg p-6 text-white">
+        <div class="bg-gradient-to-r from-jurnal-teal-500 to-jurnal-teal-600 rounded-soft-lg shadow-lg p-6 text-white">
           <div class="flex items-center justify-between">
             <div class="flex-1">
               <h2 class="text-2xl font-bold mb-1">{{ childStore.selectedChild?.name }}</h2>
               <div class="space-y-1">
                 <div class="flex items-center gap-2">
-                  <p class="text-indigo-100 text-sm">{{ ageInfo.chronologicalDisplay }}</p>
+                  <p class="text-white/90 text-sm">{{ ageInfo.chronologicalDisplay }}</p>
                   <span v-if="ageInfo.useCorrected" class="px-2 py-0.5 bg-amber-400/20 text-amber-100 text-xs rounded-full border border-amber-300/30">
                     Usia Koreksi: {{ ageInfo.correctedDisplay }}
                   </span>
                 </div>
-                <p v-if="childStore.selectedChild?.is_premature && ageInfo.useCorrected" class="text-indigo-200 text-xs">
+                <p v-if="childStore.selectedChild?.is_premature && ageInfo.useCorrected" class="text-white/80 text-xs">
                   Prematur ({{ childStore.selectedChild?.gestational_age }} minggu) - Menggunakan usia koreksi
                 </p>
-                <p class="text-indigo-100 text-sm">{{ childStore.selectedChild?.gender === 'male' ? 'Laki-laki' : 'Perempuan' }}</p>
+                <p class="text-white/90 text-sm">{{ childStore.selectedChild?.gender === 'male' ? 'Laki-laki' : 'Perempuan' }}</p>
               </div>
             </div>
             <div class="text-5xl ml-4">{{ childStore.selectedChild?.gender === 'male' ? '👦' : '👧' }}</div>
@@ -71,7 +71,7 @@
         </div>
 
         <!-- Red Flag Alert (Conditional) - Show at top if exists -->
-        <div v-if="milestoneStore.summary?.red_flags_detected?.length" class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 flex items-start shadow-sm">
+        <div v-if="milestoneStore.summary?.red_flags_detected?.length" class="bg-red-50 border-l-4 border-red-500 rounded-soft p-4 flex items-start shadow-sm">
           <div class="text-2xl mr-3 flex-shrink-0">🚨</div>
           <div class="flex-1">
             <h3 class="font-bold text-red-800 mb-1">Perhatian Diperlukan!</h3>
@@ -88,7 +88,7 @@
         <!-- Quick Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <!-- Status Pertumbuhan Card -->
-          <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-emerald-500">
+          <div class="bg-white rounded-soft shadow-sm p-5 border-l-4 border-emerald-500">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <p class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">Status Pertumbuhan</p>
@@ -104,20 +104,20 @@
           </div>
 
           <!-- Milestone Card -->
-          <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-indigo-500">
+          <div class="bg-white rounded-soft shadow-sm border border-jurnal-charcoal-200 p-5 border-l-4 border-jurnal-teal-600">
             <div class="flex items-start justify-between">
               <div class="flex-1 min-w-0">
                 <p class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">Milestone Tercapai</p>
                 <p class="text-xl font-bold text-gray-900 mb-1">
                   {{ milestoneStore.summary ? `${milestoneStore.summary.completed_milestones} / ${milestoneStore.summary.total_milestones}` : 'Belum ada data' }}
                 </p>
-                <p v-if="milestoneStore.summary" class="text-xs text-indigo-600 font-medium mb-2">
+                <p v-if="milestoneStore.summary" class="text-xs text-jurnal-charcoal-600 font-medium mb-2">
                   {{ Math.round((milestoneStore.summary.completed_milestones / milestoneStore.summary.total_milestones) * 100) || 0 }}% Selesai
                 </p>
                 <!-- Progress Bar -->
                 <div v-if="milestoneStore.summary && milestoneStore.summary.total_milestones > 0" class="w-full bg-gray-200 rounded-full h-1.5">
                   <div 
-                    class="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" 
+                    class="bg-jurnal-teal-600 h-1.5 rounded-full transition-all duration-300" 
                     :style="{ width: `${Math.round((milestoneStore.summary.completed_milestones / milestoneStore.summary.total_milestones) * 100)}%` }"
                   ></div>
                 </div>
@@ -127,7 +127,7 @@
           </div>
 
           <!-- Pengukuran Terakhir Card -->
-          <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-amber-500">
+          <div class="bg-white rounded-soft shadow-sm p-5 border-l-4 border-amber-500">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <p class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">Pengukuran Terakhir</p>
@@ -150,13 +150,13 @@
 
 
         <!-- Next Immunization Widget -->
-        <div v-if="!immunizationStore.loading" class="bg-white rounded-xl shadow-sm p-6">
+        <div v-if="!immunizationStore.loading" class="bg-white rounded-soft-lg shadow-sm p-6">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
               <span class="text-2xl">💉</span>
               Jadwal Imunisasi Berikutnya
             </h3>
-            <NuxtLink to="/immunization" class="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+            <NuxtLink to="/immunization" class="text-sm text-jurnal-teal-600 hover:text-jurnal-teal-700 font-medium transition-colors">
               Lihat Jadwal Lengkap →
             </NuxtLink>
           </div>
@@ -166,7 +166,7 @@
             <div 
               v-for="imm in nextImmunizations" 
               :key="imm?.schedule?.id || Math.random()"
-              class="p-4 rounded-lg border-2 transition hover:shadow-md"
+              class="p-4 rounded-soft border-2 transition hover:shadow-md"
               :class="getNextImmunizationCardClass(imm)"
             >
               <div v-if="imm && imm.schedule" class="flex items-start justify-between">
@@ -228,7 +228,7 @@
           </div>
           
           <!-- Empty State - All Completed -->
-          <div v-if="nextImmunizations.length === 0" class="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-center">
+          <div v-if="nextImmunizations.length === 0" class="mt-4 p-4 bg-green-50 border border-green-200 rounded-soft text-center">
             <p class="text-sm text-green-800 font-medium">
               ✅ Semua imunisasi untuk usia saat ini telah selesai
             </p>
@@ -241,26 +241,26 @@
         <!-- Action Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Aksi Cepat Section -->
-          <div class="bg-white rounded-lg shadow-sm p-6">
+          <div class="bg-white rounded-soft shadow-sm p-6">
             <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center">
-              <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-2 text-jurnal-charcoal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
               Aksi Cepat
             </h3>
             <div class="space-y-3">
-              <NuxtLink to="/growth/add" class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition group">
+              <NuxtLink to="/growth/add" class="flex items-center space-x-3 p-3 border border-jurnal-charcoal-200 rounded-soft hover:border-jurnal-teal-300 hover:bg-jurnal-teal-50 transition group">
                 <div class="text-2xl group-hover:scale-110 transition-transform">📊</div>
                 <div class="flex-1 min-w-0">
                   <p class="font-semibold text-gray-900 text-sm">Tambah Pengukuran</p>
                   <p class="text-xs text-gray-500">Input data berat & tinggi badan</p>
                 </div>
-                <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-jurnal-charcoal-400 group-hover:text-jurnal-teal-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
               </NuxtLink>
 
-              <NuxtLink to="/development" class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition group">
+              <NuxtLink to="/development" class="flex items-center space-x-3 p-3 border border-gray-200 rounded-soft hover:border-emerald-300 hover:bg-emerald-50 transition group">
                 <div class="text-2xl group-hover:scale-110 transition-transform">✅</div>
                 <div class="flex-1 min-w-0">
                   <p class="font-semibold text-gray-900 text-sm">Cek Milestone</p>
@@ -274,7 +274,7 @@
           </div>
 
           <!-- Lihat Grafik Section -->
-          <div class="bg-white rounded-lg shadow-sm p-6">
+          <div class="bg-white rounded-soft shadow-sm p-6">
             <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center">
               <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -284,7 +284,7 @@
             <div class="space-y-3">
               <NuxtLink 
                 to="/growth/charts" 
-                class="flex items-center space-x-3 p-3 border-2 border-indigo-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition group"
+                class="flex items-center space-x-3 p-3 border-2 border-jurnal-teal-200 rounded-soft hover:border-jurnal-teal-400 hover:bg-jurnal-teal-50 transition group shadow-sm"
                 :class="{ 'opacity-50 cursor-not-allowed pointer-events-none': !measurementStore.hasMeasurements }"
               >
                 <div class="text-2xl group-hover:scale-110 transition-transform">📈</div>
@@ -293,14 +293,14 @@
                   <p class="text-xs text-gray-500">BB/U dan TB/U berdasarkan standar WHO</p>
                   <p v-if="!measurementStore.hasMeasurements" class="text-xs text-amber-600 mt-0.5">Belum ada data</p>
                 </div>
-                <svg class="w-5 h-5 text-indigo-600 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-jurnal-teal-600 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
               </NuxtLink>
 
               <NuxtLink 
                 to="/development/denver-ii" 
-                class="flex items-center space-x-3 p-3 border-2 border-purple-200 rounded-lg hover:border-purple-400 hover:bg-purple-50 transition group"
+                class="flex items-center space-x-3 p-3 border-2 border-purple-200 rounded-soft hover:border-purple-400 hover:bg-purple-50 transition group"
               >
                 <div class="text-2xl group-hover:scale-110 transition-transform">📉</div>
                 <div class="flex-1 min-w-0">
@@ -315,7 +315,7 @@
               <button 
                 @click="downloadPDF"
                 :disabled="downloadingPDF"
-                class="flex items-center space-x-3 p-3 border-2 border-red-200 rounded-lg hover:border-red-400 hover:bg-red-50 transition group w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                class="flex items-center space-x-3 p-3 border-2 border-red-200 rounded-soft hover:border-red-400 hover:bg-red-50 transition group w-full disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div class="text-2xl group-hover:scale-110 transition-transform">📄</div>
                 <div class="flex-1 min-w-0 text-left">
@@ -400,7 +400,7 @@ const downloadPDF = async () => {
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `tukem_report_${childStore.selectedChild.name}_${new Date().toISOString().split('T')[0]}.pdf`
+    link.download = `jsk_report_${childStore.selectedChild.name}_${new Date().toISOString().split('T')[0]}.pdf`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -684,21 +684,14 @@ onMounted(async () => {
   isMounted.value = true
   
   try {
-    console.log('Dashboard mounted')
-    console.log('Current auth token:', authStore.token ? 'exists' : 'missing')
-    
     // Fetch children list (this will also restore selected child from localStorage)
     await childStore.fetchChildren()
     
     // Guard: Check if still mounted after async operation
     if (!isMounted.value) return
     
-    console.log('Children fetched:', childStore.children.length, 'children')
-    console.log('Selected child:', childStore.selectedChild?.id || 'none')
-    
     // If there's a selected child, fetch their data
     if (childStore.selectedChild) {
-      console.log('Fetching data for selected child:', childStore.selectedChild.id)
       try {
         await Promise.all([
           measurementStore.fetchLatestMeasurement(childStore.selectedChild.id),
@@ -709,9 +702,6 @@ onMounted(async () => {
         
         // Guard: Check if still mounted after async operation
         if (!isMounted.value) return
-        
-        console.log('Latest measurement:', measurementStore.latestMeasurement)
-        console.log('Milestone summary:', milestoneStore.summary)
       } catch (fetchError) {
         // Guard: Don't update if component is unmounted
         if (!isMounted.value) return

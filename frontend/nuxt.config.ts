@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   devtools: { enabled: process.env.NODE_ENV !== 'production' },
   css: ['~/assets/css/main.css'],
   modules: ['@pinia/nuxt', 'nuxt-icon'],
+  experimental: {
+    payloadExtraction: false
+  },
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -31,6 +34,7 @@ export default defineNuxtConfig({
             'www.anakhebat.web.id',
             '103.127.134.107'
           ]
-    }
+    },
+    assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.svg']
   }
 })

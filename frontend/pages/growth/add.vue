@@ -10,7 +10,7 @@
       <div class="text-5xl mb-4">⚠️</div>
       <h2 class="text-xl font-bold text-gray-900 mb-2">Pilih Anak Terlebih Dahulu</h2>
       <p class="text-gray-600 mb-4">Silakan pilih anak dari dropdown di header</p>
-      <NuxtLink to="/children" class="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+      <NuxtLink to="/children" class="inline-block px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition">
         Kelola Profil Anak
       </NuxtLink>
     </div>
@@ -26,7 +26,7 @@
             type="date" 
             required
             :max="today"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
           />
           <p v-if="calculatedAge" class="text-sm text-gray-600 mt-2">Usia saat pengukuran: {{ calculatedAge }}</p>
         </div>
@@ -40,7 +40,7 @@
             step="0.01"
             min="0"
             required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
             placeholder="3.5"
           />
         </div>
@@ -54,7 +54,7 @@
             step="0.1"
             min="0"
             required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
             placeholder="50.5"
           />
         </div>
@@ -67,7 +67,7 @@
             type="number" 
             step="0.1"
             min="0"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-jurnal-teal-500 focus:border-jurnal-teal-500"
             placeholder="35.0"
           />
         </div>
@@ -89,7 +89,7 @@
           <button 
             type="submit"
             :disabled="loading"
-            class="flex-1 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+            class="flex-1 px-6 py-3 bg-jurnal-teal-600 text-white font-semibold rounded-lg hover:bg-jurnal-teal-700 transition disabled:opacity-50"
           >
             {{ loading ? 'Menyimpan...' : 'Simpan' }}
           </button>
@@ -163,15 +163,10 @@ const handleSubmit = async () => {
       measurementData.head_circumference = form.value.head_circumference
     }
 
-    console.log('Submitting measurement:', measurementData)
-    console.log('For child:', childStore.selectedChild.id)
-
     const result = await measurementStore.addMeasurement(
       childStore.selectedChild.id,
       measurementData
     )
-
-    console.log('Submission result:', result)
 
     if (result.success) {
       router.push('/growth')

@@ -7,7 +7,7 @@
         <p class="text-gray-600">Usia: {{ currentAge }} Bulan</p>
       </div>
       <div class="text-sm text-gray-500">
-        <span v-if="saving" class="flex items-center text-indigo-600">
+        <span v-if="saving" class="flex items-center text-jurnal-teal-600">
           <Icon name="mdi:loading" class="animate-spin mr-1" /> Menyimpan...
         </span>
         <span v-else-if="lastSaved">Disimpan {{ lastSaved }}</span>
@@ -15,7 +15,7 @@
     </div>
 
     <div v-if="milestoneStore.loading" class="py-12 text-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-jurnal-teal-600 mx-auto"></div>
       <p class="mt-4 text-gray-500">Memuat checklist...</p>
     </div>
 
@@ -24,7 +24,7 @@
       <div v-for="(group, level) in milestoneStore.milestonesByLevel" :key="level" class="bg-white rounded-xl shadow-sm overflow-hidden">
         <div class="px-6 py-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
           <h3 class="font-bold text-gray-800 flex items-center">
-            <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs mr-2">{{ level }}</span>
+            <span class="w-6 h-6 rounded-full bg-jurnal-teal-100 text-jurnal-teal-600 flex items-center justify-center text-xs mr-2">{{ level }}</span>
             {{ group.name }}
           </h3>
           <span class="text-xs font-medium px-2 py-1 rounded bg-gray-200 text-gray-600">{{ group.items.length }} Item</span>
@@ -95,7 +95,7 @@
           <button 
             @click="saveAll" 
             :disabled="saving || draftCount === 0"
-            class="px-6 py-2.5 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md flex-1 sm:flex-none transition"
+            class="px-6 py-2.5 bg-jurnal-teal-600 text-white font-bold rounded-lg hover:bg-jurnal-teal-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md flex-1 sm:flex-none transition"
           >
             {{ saving ? 'Menyimpan...' : 'Simpan' }}
           </button>

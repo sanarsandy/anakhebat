@@ -92,6 +92,9 @@ func EchoServer() *echo.Echo {
 	auth.POST("/request-otp", handlers.RequestOTP)
 	auth.POST("/verify-otp", handlers.VerifyOTP)
 	auth.POST("/resend-otp", handlers.ResendOTP)
+	// Admin OTP Authentication Routes
+	auth.POST("/admin/request-otp", handlers.AdminRequestOTP)
+	auth.POST("/admin/verify-otp", handlers.AdminVerifyOTP)
 	// Google OAuth Routes
 	auth.GET("/google", handlers.GetGoogleAuthURL)
 	auth.GET("/google/callback", handlers.GoogleAuthCallback)

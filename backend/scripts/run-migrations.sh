@@ -19,6 +19,7 @@ MIGRATIONS=(
     "007_stimulation_content.sql"
     "008_immunization_tables.sql"
     "009_add_phone_otp_auth.sql"
+    "010_add_admin_rbac.sql"
 )
 
 # Database connection (adjust as needed)

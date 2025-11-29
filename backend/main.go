@@ -155,5 +155,74 @@ func EchoServer() *echo.Echo {
 	// Growth Charts Routes
 	api.GET("/who-standards", handlers.GetWHOStandardsForChart)
 
+	// Admin Routes - Protected with admin middleware
+	// Note: api group already has JWTMiddleware, so admin routes are already JWT protected
+	admin := api.Group("/admin")
+	admin.Use(customMiddleware.RequireAdmin())
+
+	// Admin User Management
+	admin.GET("/users", handlers.GetAdminUsers)
+	admin.GET("/users/:id", handlers.GetAdminUser)
+	admin.POST("/users", handlers.CreateAdminUser)
+	admin.PUT("/users/:id", handlers.UpdateAdminUser)
+	admin.DELETE("/users/:id", handlers.DeleteAdminUser)
+	admin.POST("/users/:id/reset-password", handlers.ResetAdminUserPassword)
+
+	// Admin Analytics
+	admin.GET("/analytics/overview", handlers.GetAdminOverview)
+	admin.GET("/analytics/users", handlers.GetAdminUsersAnalytics)
+	admin.GET("/analytics/children", handlers.GetAdminChildrenAnalytics)
+	admin.GET("/analytics/measurements", handlers.GetAdminMeasurementsAnalytics)
+	admin.GET("/analytics/assessments", handlers.GetAdminAssessmentsAnalytics)
+	admin.GET("/analytics/immunizations", handlers.GetAdminImmunizationsAnalytics)
+
+	// Admin Reports
+	admin.GET("/reports/users", handlers.GetUsersReport)
+	admin.GET("/reports/children", handlers.GetChildrenReport)
+	admin.GET("/reports/growth", handlers.GetGrowthReport)
+
+	// Admin System Settings
+	admin.GET("/settings", handlers.GetSystemSettings)
+	admin.GET("/settings/:key", handlers.GetSystemSetting)
+	admin.PUT("/settings/:key", handlers.UpdateSystemSetting)
+	admin.PUT("/settings", handlers.UpdateSystemSettingsBatch)
+
+	// Admin Audit Logs
+	admin.GET("/audit-logs", handlers.GetAuditLogs)
+	admin.GET("/audit-logs/:id", handlers.GetAuditLog)
+	admin.GET("/audit-logs/export", handlers.ExportAuditLogs)
+
+	// Admin Data Access (View All)
+	admin.GET("/children", handlers.GetAdminChildren)
+	admin.GET("/children/:id", handlers.GetAdminChild)
+	admin.GET("/measurements", handlers.GetAdminMeasurements)
+	admin.GET("/assessments", handlers.GetAdminAssessments)
+	admin.GET("/immunizations", handlers.GetAdminImmunizations)
+
+	// Admin Master Data Management
+	admin.GET("/milestones", handlers.GetAdminMilestones)
+	admin.GET("/milestones/:id", handlers.GetAdminMilestone)
+	admin.POST("/milestones", handlers.CreateAdminMilestone)
+	admin.PUT("/milestones/:id", handlers.UpdateAdminMilestone)
+	admin.DELETE("/milestones/:id", handlers.DeleteAdminMilestone)
+
+	admin.GET("/who-standards", handlers.GetAdminWHOStandards)
+	admin.GET("/who-standards/:id", handlers.GetAdminWHOStandard)
+	admin.POST("/who-standards", handlers.CreateAdminWHOStandard)
+	admin.PUT("/who-standards/:id", handlers.UpdateAdminWHOStandard)
+	admin.DELETE("/who-standards/:id", handlers.DeleteAdminWHOStandard)
+
+	admin.GET("/stimulation-content", handlers.GetAdminStimulationContent)
+	admin.GET("/stimulation-content/:id", handlers.GetAdminStimulationContentItem)
+	admin.POST("/stimulation-content", handlers.CreateAdminStimulationContent)
+	admin.PUT("/stimulation-content/:id", handlers.UpdateAdminStimulationContent)
+	admin.DELETE("/stimulation-content/:id", handlers.DeleteAdminStimulationContent)
+
+	admin.GET("/immunization-schedules", handlers.GetAdminImmunizationSchedules)
+	admin.GET("/immunization-schedules/:id", handlers.GetAdminImmunizationSchedule)
+	admin.POST("/immunization-schedules", handlers.CreateAdminImmunizationSchedule)
+	admin.PUT("/immunization-schedules/:id", handlers.UpdateAdminImmunizationSchedule)
+	admin.DELETE("/immunization-schedules/:id", handlers.DeleteAdminImmunizationSchedule)
+
 	return e
 }
